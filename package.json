@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
+    "@babel/plugin-proposal-decorators": "^7.14.5",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "antd": "^4.16.13",
+    "babel-plugin-import": "^1.13.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -17,10 +17,14 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "build:test": "dotenv -e .env.test react-app-rewired build",
+    "analyzer": "dotenv -e .env.test react-app-rewired build",
+    "lint-staged": "lint-staged",
+    "prettier": "prettier --write 'src/**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "gh": "gh-pages -d dist",
+    "mock": "nodemon ./mock/server.js"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +43,23 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "body-parser": "^1.19.0",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.2",
+    "circular-dependency-plugin": "^5.2.2",
+    "customize-cra": "^1.0.0",
+    "deepmerge": "^4.2.2",
+    "dotenv-cli": "^4.0.0",
+    "less": "^4.1.1",
+    "less-loader": "7.1.0",
+    "mockjs": "^1.1.0",
+    "react-app-rewired": "^2.1.8",
+    "react-refresh": "^0.10.0",
+    "script-ext-html-webpack-plugin": "^2.1.5",
+    "webpack-dashboard": "^3.3.5",
+    "webpackbar": "^5.0.0-3"
   }
 }
