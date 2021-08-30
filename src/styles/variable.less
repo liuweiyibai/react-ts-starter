@@ -1,0 +1,24 @@
+@red: red;
+
+//兼容IE透明度写法
+.opacity(@opacity: 0.5) {
+  @freaking-ie: @opacity * 100;
+
+  filter: alpha(opacity= @freaking-ie);
+  opacity: @opacity;
+}
+//多行文字超出显示省略号
+.ellipsisMultiline(@number: 1) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @number;
+}
+//文字一行超出显示省略号
+.ellipsis () {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
