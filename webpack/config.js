@@ -90,6 +90,7 @@ const addCustomizeConfig = () => config => {
 };
 
 exports.webpackOveride = override(
+  // 使用 babel 配置文件
   useBabelRc(),
   // 增加别名
   addWebpackAlias({
@@ -175,15 +176,16 @@ exports.devServerConfig = overrideDevServer(config => {
     compress: true,
     disableHostCheck: true,
     hot: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:7001',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/api',
-        },
-      },
-    },
+    // 对真实接口做反代
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:7001',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': '/api',
+    //     },
+    //   },
+    // },
     overlay: {
       warnings: false,
       errors: true,

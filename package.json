@@ -8,12 +8,17 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "antd": "^4.16.13",
+    "axios": "^0.21.1",
     "babel-plugin-import": "^1.13.3",
+    "eslint": "^7.32.0",
+    "eslint-config-alloy": "^4.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
+    "typescript": "4.3.5",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -21,15 +26,19 @@
     "build": "react-app-rewired build",
     "build:test": "dotenv -e .env.test react-app-rewired build",
     "analyzer": "dotenv -e .env.test react-app-rewired build",
-    "lint-staged": "lint-staged",
-    "prettier": "prettier --write 'src/**/*.{js,jsx,tsx,ts,less,md,json}'",
     "gh": "gh-pages -d dist",
-    "mock": "nodemon ./mock/server.js"
+    "prepare": "husky install",
+    "prettier": "prettier --write 'src/**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' --ignore-path .gitignore --ignore-pattern './*.js'",
+    "lint:style": "stylelint \"**/*.{less,css,scss}\" --ignore-path .gitignore"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "yarn lint --fix",
+      "yarn prettier"
+    ],
+    "src/**/*.{css,scss,less}": [
+      "yarn lint:style"
     ]
   },
   "browserslist": {
@@ -45,20 +54,31 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
-    "body-parser": "^1.19.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "circular-dependency-plugin": "^5.2.2",
     "customize-cra": "^1.0.0",
     "deepmerge": "^4.2.2",
     "dotenv-cli": "^4.0.0",
+    "husky": "^7.0.2",
     "less": "^4.1.1",
     "less-loader": "7.1.0",
+    "lint-staged": "^11.1.2",
     "mockjs": "^1.1.0",
+    "prettier": "^2.3.2",
     "react-app-rewired": "^2.1.8",
     "react-refresh": "^0.10.0",
     "script-ext-html-webpack-plugin": "^2.1.5",
+    "stylelint": "^13.13.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-recess-order": "^2.5.0",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-less": "^1.0.1",
+    "stylelint-prettier": "^1.2.0",
+    "stylelint-scss": "^3.20.1",
     "webpack-dashboard": "^3.3.5",
     "webpackbar": "^5.0.0-3"
   }
