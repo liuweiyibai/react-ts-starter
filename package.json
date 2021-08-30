@@ -38,7 +38,7 @@
       "yarn prettier"
     ],
     "src/**/*.{css,scss,less}": [
-      "yarn lint:style"
+      "yarn lint:style --fix"
     ]
   },
   "browserslist": {

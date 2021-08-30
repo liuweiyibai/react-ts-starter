@@ -1,0 +1,1 @@
+[{"url":"/user/login","type":"post"},{"url":"/user/me.*","type":"get"},{"url":"/user/logout","type":"post"}]

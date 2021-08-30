@@ -16,8 +16,6 @@ function registerRoutes(app) {
   const mocksForServer = mocks.map(route => {
     return responseFake(route.url, route.type, route.response);
   });
-  const fs = require('fs')
-  fs.writeFileSync('a.js',JSON.stringify(mocks))
   for (const mock of mocksForServer) {
     app[mock.type](mock.url, mock.response);
     mockLastIndex = app._router.stack.length;
