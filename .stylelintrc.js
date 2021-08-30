@@ -8,6 +8,12 @@ module.exports = {
   rules: {
     'prettier/prettier': true,
     // 校验规则略
-    'at-rule-no-unknown': null
+    'at-rule-no-unknown': null,
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: ['global'],
+      },
+    ],
   },
 };

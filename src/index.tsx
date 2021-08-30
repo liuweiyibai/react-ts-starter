@@ -1,17 +1,26 @@
-import React from 'react';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN'; // 引入中文包
+import { Provider } from 'mobx-react';
 import ReactDOM from 'react-dom';
-import './styles/index.css';
 import App from './App';
+import { stores, StoreProvider } from './store/hooks';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+import './styles/index.css';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+const bootstrap = () => {
+  /* eslint-disable react/no-render-return-value */
+  return ReactDOM.render(
+    <ConfigProvider locale={zhCN}>
+      <Provider {...stores}>
+        <StoreProvider>
+          <App />
+        </StoreProvider>
+      </Provider>
+    </ConfigProvider>,
+    document.getElementById('root'),
+  );
+};
+
+bootstrap();
 reportWebVitals();
