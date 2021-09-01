@@ -7,6 +7,7 @@ const {
   overrideDevServer,
   addBundleVisualizer,
   addWebpackPlugin,
+  // addWebpackModuleRule
   adjustStyleLoaders,
   fixBabelImports,
   useBabelRc,
@@ -114,7 +115,7 @@ exports.webpackOveride = override(
      */
     additionalData: `@import "${pathJoin('../src/styles/variable.less')}";`,
     lessOptions: {
-      modifyVars: { '@primary-color': '#1DA57A' },
+      modifyVars: { '@primary-color': '#FF8800' },
       javascriptEnabled: true,
       strictMath: false,
       cssLoaderOptions: {},
@@ -148,7 +149,8 @@ exports.webpackOveride = override(
       allowAsyncCycles: false,
       cwd: process.cwd(),
     }),
-
+    
+    // 热更新
     !isProduction && new webpack.HotModuleReplacementPlugin(),
     !isProduction && new ReactRefreshWebpackPlugin()
   ),

@@ -1,30 +1,40 @@
-import { makeObservable, observable, action } from 'mobx';
+import { makeObservable, observable, action, computed } from 'mobx';
+import { sleep } from 'utils/tool';
+
+export interface TypeUserInfo {
+  [key: string]: any;
+}
+
+const appToken = sessionStorage.getItem('token');
 export default class UserStore {
-  public loading = false;
-  public loginSuccess = false;
+  public token = appToken;
+  public userInfo: TypeUserInfo = {};
+  public loginLoading = false;
+
   constructor() {
     makeObservable(this, {
-      loading: observable,
-      loginSuccess: observable,
-      loginAction: action,
-      loginOutAction: action,
+      token: observable,
+      loginLoading: observable,
+      userInfo: observable,
+      isLogin: computed,
+      loginAction: action.bound,
+      loginOutAction: action.bound,
     });
   }
 
-  public loginAction(): Promise<number> {
-    this.loading = true;
-    return new Promise(resolve => {
-      setTimeout(() => {
-        this.loginSuccess = true;
-        this.loading = false;
-        sessionStorage.setItem('token', 'logingedddd');
-        resolve(1);
-      }, 1000);
-    });
+  get isLogin(): boolean {
+    return !!this.token;
+  }
+
+  async loginAction() {
+    this.loginLoading = true;
+    await sleep(2000);
+    const token = String(new Date());
+    this.token = token;
+    sessionStorage.setItem('token', token);
   }
 
   public loginOutAction() {
-    this.loginSuccess = false;
     sessionStorage.setItem('token', '');
     window.location.reload();
   }

@@ -16,13 +16,14 @@ const tailLayout = {
 };
 
 //登录页面
-function Login({ history }: Props): ReactElement {
-  const { userStore } = useStores();
-  const { loading, loginSuccess } = userStore;
+function Login({ history, location }: Props): ReactElement {
+  const { loginLoading, isLogin, loginAction } = useStores('userStore');
 
   const onFinish = async (values: any) => {
-    const resp = await userStore.loginAction();
-    console.log(resp.toFixed(2));
+    const resp = await loginAction();
+    console.log(location);
+
+    // history.replace("/")
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -31,7 +32,7 @@ function Login({ history }: Props): ReactElement {
 
   //登录了之后要跳转到home页面
   const token: string | null = sessionStorage.getItem('token');
-  if (loginSuccess || (token && token.length > 0)) {
+  if (isLogin || (token && token.length > 0)) {
     return <Redirect to={'/'} />;
   }
   return (
@@ -74,7 +75,7 @@ function Login({ history }: Props): ReactElement {
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={loginLoading}>
             登录
           </Button>
         </Form.Item>

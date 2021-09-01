@@ -7,9 +7,7 @@ import routers, { IRouterProps } from 'router';
 import { useStores } from 'store/hooks';
 
 const App: FC = () => {
-  const { userStore } = useStores();
-  const { loginSuccess } = userStore;
-  const isLogin = loginSuccess || sessionStorage.getItem('token');
+  const { isLogin } = useStores('userStore');
   console.log('是否登录==>' + isLogin);
 
   return (

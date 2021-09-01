@@ -5,6 +5,7 @@ import DocumentTitle from 'react-document-title';
 import { RouteComponentProps } from 'react-router-dom';
 import AppStore from 'store/stores/AppStore';
 import UserStore from 'store/stores/UserStore';
+import { ReactComponent as SenticSvg } from 'assets/svgs/Sentic.svg';
 import styles from './style.module.less';
 
 interface IBasicLayoutProps extends RouteComponentProps {
@@ -15,7 +16,7 @@ interface IBasicLayoutProps extends RouteComponentProps {
 }
 
 interface IBasicLayoutState {
-  a?: any;
+  [key: string]: any;
 }
 
 const { Header, Content } = Layout;
@@ -26,7 +27,9 @@ export default class BasicLayout extends Component<
   IBasicLayoutProps,
   IBasicLayoutState
 > {
-  componentDidMount() {}
+  componentDidMount() {
+    console.log(this.props);
+  }
 
   render() {
     const { userStore, appStore } = this.props;
@@ -58,6 +61,7 @@ export default class BasicLayout extends Component<
 
           <Content className={styles.main} id="mainContainer">
             {this.props.children}
+            <SenticSvg className={styles['ant-menu']} />
           </Content>
         </Layout>
       </DocumentTitle>

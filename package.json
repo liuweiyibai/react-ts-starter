@@ -34,11 +34,12 @@
     "prepare": "husky install",
     "prettier": "prettier --write 'src/**/*.{js,jsx,tsx,ts,less,md,json}'",
     "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' --ignore-path .gitignore --ignore-pattern './*.js'",
+    "lint:fix": "yarn lint --fix",
     "lint:style": "stylelint \"**/*.{less,css,scss}\" --ignore-path .gitignore"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "yarn lint --fix",
+      "yarn lint:fix",
       "yarn prettier"
     ],
     "src/**/*.{css,scss,less}": [
@@ -61,6 +62,7 @@
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@types/customize-cra": "^1.0.2",
     "@types/react-document-title": "^2.0.5",
     "@types/react-router-dom": "^5.1.8",
     "chalk": "^4.1.2",

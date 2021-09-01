@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 
 export interface IMenus {
   id?: number | string;
@@ -18,7 +18,11 @@ export default class AppStore {
   public _loading: boolean = false;
   public _currentItem: IMenus[] = [];
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      _loading: observable,
+      _currentItem: observable,
+      setCurrentItem: action.bound,
+    });
   }
   async setCurrentItem(val: IMenus): Promise<any> {
     await sleep(1000);

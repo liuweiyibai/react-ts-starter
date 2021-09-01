@@ -1,5 +1,5 @@
-import { createContext, FC, useContext } from 'react';
-import { useLocalObservable } from 'mobx-react';
+import { useContext } from 'react';
+import { MobXProviderContext } from 'mobx-react';
 import AppStore from './stores/AppStore';
 import UserStore from './stores/UserStore';
 
@@ -15,21 +15,21 @@ const createStores = () => {
 // 类组件使用的store
 const stores = createStores();
 
-// Context的封装,创建 Provider，通过 React.Context来注入,包裹函数组件,将hookStores注入到函数组件中
-const StoresContext = createContext(stores);
+export type StoreType = ReturnType<typeof createStores>;
 
-const useStores = () => useContext(StoresContext); // hooks组件使用的store
+// 这两个是函数声明，重载
+function useStores(): StoreType;
+function useStores<T extends keyof StoreType>(storeName: T): StoreType[T];
 
-type TypeStore = ReturnType<typeof createStores>;
-const StoreContext = createContext<TypeStore | null>(null);
+/**
+ * 获取根 store 或者指定 store 名称数据
+ * @param storeName 指定子 store 名称
+ * @returns typeof StoreType[storeName]
+ */
+function useStores<T extends keyof StoreType>(storeName?: T) {
+  const rootStore = useContext(MobXProviderContext);
+  const stores = rootStore as StoreType;
+  return storeName ? stores[storeName] : stores;
+}
 
-// 创建 Provider，通过 React.Context 来注入
-const StoreProvider: FC = ({ children }) => {
-  // 函数组件中hooks使用的store
-  const hookStores = useLocalObservable(createStores);
-  return (
-    <StoreContext.Provider value={hookStores}>{children}</StoreContext.Provider>
-  );
-};
-
-export { stores, StoreProvider, useStores };
+export { stores, useStores };

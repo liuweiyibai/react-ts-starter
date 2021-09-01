@@ -52,3 +52,9 @@ git commit # 此时自动进入lint校验，校验通过后输入commit信息
 [stylelint 配置使用，自动修复css，书写顺序](https://juejin.cn/post/6940127032932040735#heading-6)
 
 [stylelint插件：css、less、scss语法校验说明](https://ask.dcloud.net.cn/article/36067)
+
+## svg 导入方案
+
+```bash
+yarn add @svgr/webpack --dev
+```
