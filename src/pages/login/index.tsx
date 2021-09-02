@@ -1,11 +1,13 @@
 import { Button, Checkbox, Form, Input } from 'antd';
 import { observer } from 'mobx-react';
-import { ReactElement } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { FC, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Location } from 'history';
 import { useStores } from 'store/hooks';
+import { formatSearch } from 'utils/tool';
 
 /* eslint-disable */
-interface Props extends RouteComponentProps {}
+// interface Props extends RouterProps {}
 
 const layout = {
   labelCol: { span: 8 },
@@ -16,25 +18,33 @@ const tailLayout = {
 };
 
 //登录页面
-function Login({ history, location }: Props): ReactElement {
-  const { loginLoading, isLogin, loginAction } = useStores('userStore');
-
+const Login: FC = () => {
+  const { loginLoading, hasToken, loginAction } = useStores('userStore');
+  const navigate = useNavigate();
+  const location = useLocation() as Location<{ from: string }>;
   const onFinish = async (values: any) => {
-    const resp = await loginAction();
-    console.log(location);
-
-    // history.replace("/")
+    const resp = await loginAction(values);
+    if (resp) {
+      const search = formatSearch(location.search);
+      const from = search?.from || { pathname: '/' };
+      navigate(from);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
 
-  //登录了之后要跳转到home页面
-  const token: string | null = sessionStorage.getItem('token');
-  if (isLogin || (token && token.length > 0)) {
-    return <Redirect to={'/'} />;
-  }
+  useEffect(() => {
+    //登录了之后要跳转到home页面
+    const token: string | null = sessionStorage.getItem('token');
+    if (hasToken || (token && token.length > 0)) {
+      const search = formatSearch(location.search);
+      const from = search?.from || { pathname: '/' };
+      navigate(from);
+    }
+    return () => {};
+  }, []);
   return (
     <div style={{ width: 300, margin: '100px auto' }}>
       <Form
@@ -82,6 +92,6 @@ function Login({ history, location }: Props): ReactElement {
       </Form>
     </div>
   );
-}
+};
 
 export default observer(Login);

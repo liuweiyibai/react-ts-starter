@@ -1,4 +1,5 @@
 import { action, makeObservable, observable } from 'mobx';
+import { sleep } from 'utils/tool';
 
 export interface IMenus {
   id?: number | string;
@@ -9,13 +10,9 @@ export interface IMenus {
   children?: IMenus[] | null;
 }
 
-/* eslint-disable */
-const sleep = (timer = 1000) =>
-  new Promise(resolve => setTimeout(resolve, timer));
-
-//全局的store
+// 全局的store
 export default class AppStore {
-  public _loading: boolean = false;
+  public _loading = false;
   public _currentItem: IMenus[] = [];
   constructor() {
     makeObservable(this, {

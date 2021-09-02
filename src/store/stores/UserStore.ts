@@ -1,5 +1,6 @@
 import { makeObservable, observable, action, computed } from 'mobx';
 import { sleep } from 'utils/tool';
+import { userLogin } from 'api';
 
 export interface TypeUserInfo {
   [key: string]: any;
@@ -16,26 +17,43 @@ export default class UserStore {
       token: observable,
       loginLoading: observable,
       userInfo: observable,
-      isLogin: computed,
+      hasToken: computed,
+      hasUserInfo: computed,
       loginAction: action.bound,
       loginOutAction: action.bound,
+      setUserAction: action.bound,
     });
   }
 
-  get isLogin(): boolean {
+  get hasToken(): boolean {
     return !!this.token;
   }
 
-  async loginAction() {
+  get hasUserInfo(): boolean {
+    return this.userInfo?.id;
+  }
+
+  async loginAction(params: any) {
     this.loginLoading = true;
-    await sleep(2000);
-    const token = String(new Date());
-    this.token = token;
-    sessionStorage.setItem('token', token);
+    const resp = await userLogin(params);
+    if (resp.code === 200) {
+      const token = resp.data as string;
+      this.token = token;
+      sessionStorage.setItem('token', token);
+      this.loginLoading = false;
+      return true;
+    }
+  }
+  async setUserAction() {
+    sleep(300);
+    // 调用接口
+    const userInfo: TypeUserInfo = { id: '44324' };
+    this.userInfo = userInfo;
+    return false;
   }
 
   public loginOutAction() {
     sessionStorage.setItem('token', '');
-    window.location.reload();
+    this.token = '';
   }
 }

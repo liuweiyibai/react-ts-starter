@@ -1,9 +1,8 @@
 import { Button } from 'antd';
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router';
 
 /* eslint-disable */
-interface INoMatchPageProps extends RouteComponentProps {}
+interface INoMatchPageProps {}
 
 interface INoMatchPageState {}
 
@@ -25,7 +24,7 @@ export default class NoMatchPage extends Component<
         <Button
           type="primary"
           onClick={() => {
-            this.props.history.replace('/');
+            console.log(3);
           }}
         >
           返回

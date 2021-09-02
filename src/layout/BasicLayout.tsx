@@ -1,18 +1,21 @@
-import { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Button, Layout } from 'antd';
 import { inject, observer } from 'mobx-react';
+import { Outlet, NavigateFunction } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
-import { RouteComponentProps } from 'react-router-dom';
 import AppStore from 'store/stores/AppStore';
 import UserStore from 'store/stores/UserStore';
 import { ReactComponent as SenticSvg } from 'assets/svgs/Sentic.svg';
+import withNavigate from 'utils/withNavigate';
+import PageLoading from 'components/PageLoading';
 import styles from './style.module.less';
 
-interface IBasicLayoutProps extends RouteComponentProps {
+interface IBasicLayoutProps {
   title?: string;
   loading?: boolean;
   appStore?: AppStore;
   userStore?: UserStore;
+  navigate?: NavigateFunction;
 }
 
 interface IBasicLayoutState {
@@ -23,16 +26,13 @@ const { Header, Content } = Layout;
 
 @inject('appStore', 'userStore')
 @observer
-export default class BasicLayout extends Component<
-  IBasicLayoutProps,
-  IBasicLayoutState
-> {
+class BasicLayout extends Component<IBasicLayoutProps, IBasicLayoutState> {
   componentDidMount() {
     console.log(this.props);
   }
 
   render() {
-    const { userStore, appStore } = this.props;
+    const { userStore, appStore, navigate } = this.props;
     return (
       <DocumentTitle title="系统">
         <Layout>
@@ -45,6 +45,7 @@ export default class BasicLayout extends Component<
             <Button
               onClick={() => {
                 userStore?.loginOutAction();
+                navigate?.('/login');
               }}
             >
               退出
@@ -60,7 +61,10 @@ export default class BasicLayout extends Component<
           </Header>
 
           <Content className={styles.main} id="mainContainer">
-            {this.props.children}
+            <Suspense fallback={<PageLoading />}>
+              <Outlet />
+            </Suspense>
+
             <SenticSvg className={styles['ant-menu']} />
           </Content>
         </Layout>
@@ -68,3 +72,4 @@ export default class BasicLayout extends Component<
     );
   }
 }
+export default withNavigate<IBasicLayoutProps>(BasicLayout);

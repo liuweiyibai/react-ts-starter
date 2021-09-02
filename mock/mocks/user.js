@@ -4,20 +4,17 @@ module.exports = [
     url: '/user/login',
     type: 'post',
     response: config => {
-      const { username } = config.body;
-      const token = `fdfsfsfdsfsdfsdf`;
-
-      // mock error
-      if (!token) {
+      const { username, password } = config.body;
+      if (username && password) {
         return {
-          code: 60204,
-          message: 'Account and password are incorrect.',
+          code: 200,
+          data: new Date(),
         };
       }
 
       return {
-        code: 20000,
-        data: token,
+        code: 60204,
+        message: 'Account and password are incorrect.',
       };
     },
   },
@@ -27,7 +24,7 @@ module.exports = [
     url: '/user/me.*',
     type: 'get',
     response: config => {
-      const users = {}
+      const users = {};
       const { token } = config.query;
       const info = users[token];
 

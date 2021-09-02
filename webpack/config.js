@@ -19,7 +19,7 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const webpack = require('webpack');
 const { externals, addCdn } = require('./cdn');
-const { invade } = require('./utils');
+const { invade, devServerProxyOrMock } = require('./utils');
 
 const pathResolve = dir => path.resolve(__dirname, dir);
 const pathJoin = dir => path.join(__dirname, dir);
@@ -39,7 +39,7 @@ const addCustomizeConfig = () => config => {
     // 美化打包后 js 文件名
     config.output.chunkFilename = config.output.chunkFilename.replace(
       '.chunk',
-      ''
+      '',
     );
 
     // 美化打包后 css 文件名
@@ -83,7 +83,7 @@ const addCustomizeConfig = () => config => {
       new ScriptExtHtmlWebpackPlugin({
         // `runtime` must same as runtimeChunk name. default is `runtime`
         inline: /runtime\..*\.js$/,
-      })
+      }),
     );
     config.externals = externals;
   }
@@ -149,10 +149,10 @@ exports.webpackOveride = override(
       allowAsyncCycles: false,
       cwd: process.cwd(),
     }),
-    
+
     // 热更新
     !isProduction && new webpack.HotModuleReplacementPlugin(),
-    !isProduction && new ReactRefreshWebpackPlugin()
+    !isProduction && new ReactRefreshWebpackPlugin(),
   ),
 
   // 开发模式下生成 css souceMap
@@ -169,7 +169,7 @@ exports.webpackOveride = override(
       if (processor && processor.loader.includes('less-loader')) {
         processor.options.sourceMap = true; // less-loader
       }
-    })
+    }),
 );
 
 exports.devServerConfig = overrideDevServer(config => {
@@ -178,20 +178,10 @@ exports.devServerConfig = overrideDevServer(config => {
     compress: true,
     disableHostCheck: true,
     hot: true,
-    // 对真实接口做反代
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:7001',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/api': '/api',
-    //     },
-    //   },
-    // },
     overlay: {
       warnings: false,
       errors: true,
     },
-    before: require('../mock/server'),
+    ...devServerProxyOrMock(),
   };
 });

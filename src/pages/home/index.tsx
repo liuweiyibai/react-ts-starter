@@ -1,15 +1,12 @@
 import { observer } from 'mobx-react';
 import React, { FC } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useStores } from 'store/hooks';
 
-interface Props extends RouteComponentProps {
-  a: string;
-}
-
 // 登录系统进入的首页
-const Home: FC<Props> = (props): JSX.Element => {
+const Home: FC = (): JSX.Element => {
   const { appStore } = useStores();
+  const navigate = useNavigate();
   return (
     <div style={{ textAlign: 'center', paddingTop: 30, fontSize: 24 }}>
       欢迎使用系统
@@ -26,6 +23,7 @@ const Home: FC<Props> = (props): JSX.Element => {
       >
         更新状态
       </button>
+      <button onClick={() => navigate('/dashboard')}>去dashboard</button>
     </div>
   );
 };

@@ -1,7 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { message as $message } from 'antd';
+import { stores } from 'store/hooks';
 
 export type { AxiosRequestConfig, Method } from 'axios';
+
+interface AjaxResponse<T> {
+  code: number;
+  data: T;
+}
 
 const axiosInstance = axios.create({
   baseURL: '/api',
@@ -18,11 +24,18 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  config => {
-    if (config?.data?.message) {
-      // $message.success(config.data.message)
+  resp => {
+    // if (resp?.data?.message) {
+    //   // $message.success(config.data.message)
+    // }
+
+    switch (resp.status) {
+      case 401:
+        stores.userStore.loginOutAction();
+        window.location.reload();
+        break;
     }
-    return config?.data;
+    return resp?.data;
   },
   error => {
     let errorMessage = '系统异常';
@@ -60,7 +73,7 @@ export const request = <T = any>({
   params,
   data,
 }: AxiosRequestConfig) =>
-  axiosInstance.request<T>({
+  axiosInstance.request<null, AjaxResponse<T>>({
     url,
     method,
     params,
