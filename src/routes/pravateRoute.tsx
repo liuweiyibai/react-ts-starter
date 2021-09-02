@@ -49,6 +49,9 @@ const PrivateRoute: FC<RouteProps> = props => {
   const { hasToken, hasUserInfo, setUserAction } = useStores('userStore');
   const navigate = useNavigate();
   useEffect(() => {
+    console.log('====================================');
+    console.log('private route');
+    console.log('====================================');
     if (!hasToken) {
       navigate('/login');
     } else {

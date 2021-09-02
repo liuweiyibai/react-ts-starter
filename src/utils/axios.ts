@@ -73,7 +73,7 @@ export const request = <T = any>({
   params,
   data,
 }: AxiosRequestConfig) =>
-  axiosInstance.request<null, AjaxResponse<T>>({
+  axiosInstance.request<{}, AjaxResponse<T>>({
     url,
     method,
     params,

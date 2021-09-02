@@ -6,8 +6,9 @@ import { Location } from 'history';
 import { useStores } from 'store/hooks';
 import { formatSearch } from 'utils/tool';
 
+import styles from './style.module.less';
+
 /* eslint-disable */
-// interface Props extends RouterProps {}
 
 const layout = {
   labelCol: { span: 8 },
@@ -46,50 +47,57 @@ const Login: FC = () => {
     return () => {};
   }, []);
   return (
-    <div style={{ width: 300, margin: '100px auto' }}>
-      <Form
-        {...layout}
-        name="basic"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="用户名"
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
-          ]}
+    <div className={styles.login_page}>
+      <iframe
+        src="https://api.lumiclass.com/admin/teachLogin"
+        frameBorder="0"
+        allow="*"
+      />
+      <div className={styles.fixed}>
+        <Form
+          {...layout}
+          name="basic"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="用户名"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your username!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="密码"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item
+            label="密码"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
 
-        <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-          <Checkbox>记住登录</Checkbox>
-        </Form.Item>
+          <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+            <Checkbox>记住登录</Checkbox>
+          </Form.Item>
 
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit" loading={loginLoading}>
-            登录
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit" loading={loginLoading}>
+              登录
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };
