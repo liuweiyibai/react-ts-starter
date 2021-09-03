@@ -47,5 +47,6 @@ module.exports = {
 
     // 将逻辑使用可选链表达式来表达
     // @typescript-eslint/prefer-optional-chain:"off"
+    // 'react/no-unescaped-entities': 'off',
   },
 };

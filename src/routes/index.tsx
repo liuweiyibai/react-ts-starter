@@ -1,13 +1,15 @@
-import { FC, lazy } from 'react';
+import { FC, lazy, Suspense } from 'react';
 import { PartialRouteObject } from 'react-router';
 import { useRoutes } from 'react-router-dom';
 import Home from 'pages/home';
 import Login from 'pages/login';
 import NoMatchPage from 'pages/404';
 import BasicLayout from 'layout/BasicLayout';
+import PageLoading from 'components/PageLoading';
 import WrapperRouteComponent from './config';
 
 const Dashboard = lazy(() => import('pages/dashboard'));
+const Calendar = lazy(() => import('pages/calendar'));
 
 const routeList: PartialRouteObject[] = [
   {
@@ -28,13 +30,11 @@ const routeList: PartialRouteObject[] = [
           <WrapperRouteComponent element={<Home />} titleId="title.home" />
         ),
       },
+
       {
-        path: '/dashboard',
+        path: '/calendar',
         element: (
-          <WrapperRouteComponent
-            element={<Dashboard />}
-            titleId="title.dashboard"
-          />
+          <WrapperRouteComponent element={<Calendar />} titleId="课程表" />
         ),
       },
       {
@@ -48,10 +48,19 @@ const routeList: PartialRouteObject[] = [
       },
     ],
   },
+  {
+    path: '/dashboard',
+    element: (
+      <WrapperRouteComponent
+        element={<Dashboard />}
+        titleId="title.dashboard"
+      />
+    ),
+  },
 ];
 
 const RenderRouter: FC = () => {
-  return useRoutes(routeList);
+  return <Suspense fallback={<PageLoading />}>{useRoutes(routeList)}</Suspense>;
 };
 
 export default RenderRouter;

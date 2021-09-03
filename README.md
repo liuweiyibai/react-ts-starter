@@ -34,10 +34,10 @@ git commit # 此时自动进入lint校验，校验通过后输入commit信息
 ## 禁用
 
 ```js
-/* stylelint-disable */ 
+/* stylelint-disable */
 // 当遇见无解 css 代码块lint校验不通过
 
-// @ts-ignore 
+// @ts-ignore
 // 当遇见无解ts问题
 
 // eslint 禁用，直接参考文档
@@ -49,12 +49,16 @@ git commit # 此时自动进入lint校验，校验通过后输入commit信息
 
 ## stylelint 参考
 
-[stylelint 配置使用，自动修复css，书写顺序](https://juejin.cn/post/6940127032932040735#heading-6)
+[stylelint 配置使用，自动修复 css，书写顺序](https://juejin.cn/post/6940127032932040735#heading-6)
 
-[stylelint插件：css、less、scss语法校验说明](https://ask.dcloud.net.cn/article/36067)
+[stylelint 插件：css、less、scss 语法校验说明](https://ask.dcloud.net.cn/article/36067)
 
 ## svg 导入方案
 
+[react-scripts](https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/package.json)
+
 ```bash
+# react-scripts 中已经内置
+
 yarn add @svgr/webpack --dev
 ```

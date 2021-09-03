@@ -115,7 +115,7 @@ exports.webpackOveride = override(
      */
     additionalData: `@import "${pathJoin('../src/styles/variable.less')}";`,
     lessOptions: {
-      modifyVars: { '@primary-color': '#FF8800' },
+      modifyVars: { '@primary-color': '#FFDA3F' },
       javascriptEnabled: true,
       strictMath: false,
       cssLoaderOptions: {},

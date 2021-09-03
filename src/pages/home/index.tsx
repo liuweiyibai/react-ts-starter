@@ -8,7 +8,14 @@ const Home: FC = (): JSX.Element => {
   const { appStore } = useStores();
   const navigate = useNavigate();
   return (
-    <div style={{ textAlign: 'center', paddingTop: 30, fontSize: 24 }}>
+    <div
+      style={{
+        textAlign: 'center',
+        paddingTop: 30,
+        fontSize: 24,
+        height: '3000px',
+      }}
+    >
       欢迎使用系统
       <div>{appStore._loading ? 'hh' : '呵呵'}</div>
       <div>

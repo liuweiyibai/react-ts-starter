@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const handleClick = () => {
   alert(1);
 };
@@ -24,4 +26,21 @@ export const formatSearch = (_se: string) => {
     }
   });
   return obj;
+};
+
+const getTimeFromMins = (mins: number) => {
+  const h = (mins / 60) | 0;
+  const m = mins % 60 | 0;
+  return moment.utc().hours(h).minutes(m).format('HH:mm');
+};
+
+export const getTimeZone = () => {
+  let timeZone: string | number = new Date().getTimezoneOffset();
+
+  if (timeZone > 0) {
+    timeZone = '-' + getTimeFromMins(timeZone);
+  } else {
+    timeZone = '+' + getTimeFromMins(-timeZone);
+  }
+  return timeZone;
 };
