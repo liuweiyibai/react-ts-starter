@@ -8,6 +8,7 @@ import { useStores } from 'store/hooks';
 
 const AppSiderBottom: FC = () => {
   const { userInfo } = useStores('userStore');
+  const { toggleVisibleAppDetection } = useStores('appStore');
   const avatarUrl = `https://s1-imfile.feishucdn.com/static-resource/v1/0ce1fbe2-46b0-49d5-b0f4-7de03ac969dg~?image_size=72x72&amp;cut_type=&amp;quality=&amp;format=image&amp;sticker_format=.webp`;
   return (
     <div className="bottom-select-wrp">
@@ -42,12 +43,7 @@ const AppSiderBottom: FC = () => {
         placement="right"
         overlayClassName="toolkit-tips"
       >
-        <div
-          className="menu-item"
-          onClick={() => {
-            // this.detectModalVisible = true;
-          }}
-        >
+        <div className="menu-item" onClick={toggleVisibleAppDetection}>
           <SystemSvg />
         </div>
       </Tooltip>

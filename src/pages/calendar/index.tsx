@@ -1,10 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { Calendar, Button, Select } from 'antd';
 import type { HeaderRender } from 'antd/lib/calendar/generateCalendar';
 import styles from './style.module.less';
 import moment, { Moment } from 'moment';
 import CourseList from './CourseList';
-import AppDetection from 'components/AppDetection';
+import { useStores } from 'store/hooks';
 
 const { Option } = Select;
 
@@ -99,27 +99,33 @@ const CourseCalendar: FC = () => {
   const [dayList, setDayList] = useState([]);
   const [currentDate, setCurrentDate] = useState(moment());
   const [visible, setVisible] = useState(true);
+
+  const { visibleAppDetection, toggleVisibleAppDetection } =
+    useStores('appStore');
   const handleOnChange = (date: Moment) => {
     console.log(date);
     setCurrentDate(date);
   };
 
+  useEffect(() => {
+    if (!visibleAppDetection) {
+      toggleVisibleAppDetection();
+    }
+  }, []);
+
   return (
-    <>
-      <section className={styles.calendar_container}>
-        <div className={styles.calendar}>
-          <Calendar
-            fullscreen={false}
-            value={currentDate}
-            onChange={handleOnChange}
-            headerRender={headerRenderFunc}
-            dateCellRender={dateCellRenderFunc(dayList)}
-          />
-        </div>
-        <CourseList currentDate={currentDate} />
-      </section>
-      {visible && <AppDetection onClose={() => setVisible(!visible)} />}
-    </>
+    <section className={styles.calendar_container}>
+      <div className={styles.calendar}>
+        <Calendar
+          fullscreen={false}
+          value={currentDate}
+          onChange={handleOnChange}
+          headerRender={headerRenderFunc}
+          dateCellRender={dateCellRenderFunc(dayList)}
+        />
+      </div>
+      <CourseList currentDate={currentDate} />
+    </section>
   );
 };
 
