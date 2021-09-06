@@ -16,8 +16,6 @@ const WebpackBar = require('webpackbar');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const webpack = require('webpack');
 const { externals, addCdn } = require('./cdn');
 const { invade, devServerProxyOrMock } = require('./utils');
 
@@ -149,10 +147,6 @@ exports.webpackOveride = override(
       allowAsyncCycles: false,
       cwd: process.cwd(),
     }),
-
-    // 热更新
-    !isProduction && new webpack.HotModuleReplacementPlugin(),
-    !isProduction && new ReactRefreshWebpackPlugin(),
   ),
 
   // 开发模式下生成 css souceMap

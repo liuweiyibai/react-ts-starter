@@ -1,0 +1,122 @@
+.modal_container {
+  display: flex;
+  flex-direction: row;
+  width: 680px;
+  height: 410px;
+  .modal_menu {
+    width: 138px;
+    height: 100%;
+    border-right: 1px solid #f0f0f0;
+    .icon {
+      font-size: 20px;
+    }
+  }
+  .modal_content {
+    position: relative;
+    box-sizing: border-box;
+    flex: 1;
+    padding: 24px;
+    .line {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+
+      .l {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 14px;
+        color: rgba(43, 43, 45, 0.5);
+      }
+
+      .r {
+        width: 330px;
+        color: rgba(43, 43, 45, 1);
+
+        &.red {
+          color: #f44a4a;
+        }
+
+        &.green {
+          color: #12d8a4;
+        }
+
+        .ant-progress-bg {
+          background: #ffda3f;
+        }
+      }
+    }
+
+    .control_bottom {
+      position: absolute;
+      bottom: 30px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      width: 90%;
+
+      button {
+        width: 180px;
+      }
+    }
+  }
+}
+
+.system {
+  //
+}
+.camera {
+  .video_preview {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+
+    canvas {
+      width: 418px;
+      height: 235px;
+      background-color: #d8d8d8;
+    }
+  }
+}
+.headphone {
+  .headphone_preview {
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+
+    img {
+      width: 58px;
+      height: 58px;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 8px 20px #f1e08e;
+    }
+
+    .label {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-left: 20px;
+
+      .title {
+        height: 16px;
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 16px;
+      }
+
+      .desc {
+        width: 251px;
+        height: 16px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 16px;
+        color: #9a9a9a;
+      }
+    }
+  }
+}
+.microphone {
+  //
+}
