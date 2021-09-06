@@ -10,6 +10,7 @@ import WrapperRouteComponent from './config';
 
 const Dashboard = lazy(() => import('pages/dashboard'));
 const Calendar = lazy(() => import('pages/calendar'));
+const LiveRoom = lazy(() => import('pages/live-room'));
 
 const routeList: PartialRouteObject[] = [
   {
@@ -55,6 +56,12 @@ const routeList: PartialRouteObject[] = [
         element={<Dashboard />}
         titleId="title.dashboard"
       />
+    ),
+  },
+  {
+    path: '/live-room',
+    element: (
+      <WrapperRouteComponent element={<LiveRoom />} titleId="title.liveRoom" />
     ),
   },
 ];
