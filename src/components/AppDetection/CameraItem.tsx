@@ -1,27 +1,61 @@
-import { FC, useRef } from 'react';
-import { Button, Select } from 'antd';
+import { FC, useRef, useEffect, useState } from 'react';
+import { Button, Select, Spin } from 'antd';
+import { observer } from 'mobx-react';
+import { useStores } from 'store/hooks';
 import styles from './style.module.less';
+import { BasicProps } from './interface';
+import { sleep } from 'utils/tool';
 
-const cameraList: any[] = [];
+const CameraItem: FC<BasicProps> = ({ nextStep }) => {
+  const { deviceInfo, cameraCurrentID, zgEngine } = useStores('appStore');
+  const [spinning, setSpinning] = useState(true);
 
-const CameraItem: FC = () => {
   const handleVideoDeviceChange = () => {};
 
-  const nextStep = () => {};
+  const videoPreviewRef = useRef<HTMLVideoElement>(null!);
+  const streamRef = useRef<MediaStream>(null!);
 
-  const zegoStore = { cameraCurrentID: '' };
+  const played = async () => {
+    setSpinning(true);
+    if (streamRef.current) {
+      zgEngine.destroyStream(streamRef.current);
+    }
+    streamRef.current = await zgEngine.createStream({
+      camera: {
+        video: true,
+        audio: true,
+        width: 418,
+        height: 235,
+        videoQuality: 4,
+        videoInput: cameraCurrentID,
+        frameRate: 15,
+        bitrate: 300,
+      },
+    });
+    videoPreviewRef.current.srcObject = streamRef.current;
+    await sleep(500);
+    setSpinning(false);
+  };
 
-  const canvasPreviewRef = useRef(null!);
+  useEffect(() => {
+    if (cameraCurrentID) {
+      played();
+    }
+    return () => {
+      zgEngine.destroyStream(streamRef.current);
+    };
+  }, []);
+
   return (
     <div className={styles.camera}>
       <div className={styles.line}>
         <div className={styles.l}>Camera :</div>
         <Select
-          defaultValue={zegoStore.cameraCurrentID}
+          defaultValue={cameraCurrentID}
           style={{ width: 300 }}
           onChange={handleVideoDeviceChange}
         >
-          {cameraList.map(item => {
+          {deviceInfo?.cameras.map(item => {
             return (
               <Select.Option key={item.deviceID} value={item.deviceID}>
                 {item.deviceName}
@@ -31,16 +65,18 @@ const CameraItem: FC = () => {
         </Select>
       </div>
       <div className={styles.video_preview}>
-        <canvas ref={canvasPreviewRef.current} />
+        <Spin spinning={spinning}>
+          <video ref={videoPreviewRef} autoPlay />
+        </Spin>
       </div>
       <div className={styles.control_bottom}>
-        <Button type="primary" onClick={() => nextStep()}>
-          Able to view
+        <Button type="primary" onClick={() => nextStep('Headphone')}>
+          下一步
         </Button>
-        <Button onClick={() => nextStep()}>Unable to view</Button>
+        <Button onClick={played}>重试</Button>
       </div>
     </div>
   );
 };
 
-export default CameraItem;
+export default observer(CameraItem);

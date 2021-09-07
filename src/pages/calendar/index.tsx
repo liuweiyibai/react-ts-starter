@@ -88,7 +88,7 @@ const dateCellRenderFunc = (dayList: TypeDayCourse[]) => {
     const hasClass = dayList.some(item => {
       return value.isSame(item.day, 'day');
     });
-    if (!hasClass) {
+    if (hasClass) {
       return <div className="point" />;
     }
     return null;

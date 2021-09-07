@@ -1,49 +1,62 @@
-import { Button, Select } from 'antd';
+import { Button, Select, Slider } from 'antd';
 import { FC, useState, useEffect } from 'react';
-import styles from './style.module.less';
+import { useAudio } from 'react-use';
+
+import { useStores } from 'store/hooks';
+import { setOutAudioDevices } from 'utils/device';
+
 import iconSoundStopImg from 'assets/images/stop-sound.png';
 import iconSoundStartImg from 'assets/images/start-sound.png';
 import soundSrc from 'assets/sounds/demo-sound.ogg';
 
-import { useAudio } from 'react-use';
-const speakerList: any[] = [];
+import styles from './style.module.less';
 
-const HeadphoneItem: FC = () => {
+import { BasicProps } from './interface';
+
+const HeadphoneItem: FC<BasicProps> = ({ nextStep }) => {
   const [isAduioPlaying, setIsAduioPlaying] = useState(false);
-  const [audio, _, controls] = useAudio({
+  const { deviceInfo, speakerCurrentID } = useStores('appStore');
+  const [Audio, status, controls, audioRef] = useAudio({
     src: soundSrc,
     autoPlay: false,
   });
 
-  const handleAudioOutputDeviceChange = () => {};
-
-  const nextStep = () => {};
-
-  const zegoStore = { speakerCurrentID: '' };
+  const handleAudioOutputDeviceChange = (deviceID: string) => {
+    setOutAudioDevices(audioRef.current, deviceID);
+  };
 
   const toggleAudioPlayer = () => {
     setIsAduioPlaying(!isAduioPlaying);
-  };
-
-  useEffect(() => {
     if (isAduioPlaying) {
       controls.pause();
     } else {
       controls.play();
     }
-  }, [isAduioPlaying]);
+  };
 
+  useEffect(() => {
+    return () => {
+      controls.pause();
+    };
+  }, []);
+
+  useEffect(() => {}, [status]);
+  const volume = status.volume;
+
+  const onVolumeChange = (count: number) => {
+    // audioRef.current?.volume = count;
+  };
   return (
     <div className={styles.headphone}>
-      {audio}
+      {Audio}
       <div className={styles.line}>
         <div className={styles.l}>Speaker :</div>
         <Select
-          defaultValue={zegoStore.speakerCurrentID}
-          style={{ width: 300 }}
+          defaultValue={speakerCurrentID}
+          style={{ width: 330 }}
           onChange={handleAudioOutputDeviceChange}
         >
-          {speakerList.map(item => {
+          {deviceInfo?.speakers.map(item => {
             return (
               <Select.Option key={item.deviceID} value={item.deviceID}>
                 {item.deviceName}
@@ -52,6 +65,18 @@ const HeadphoneItem: FC = () => {
           })}
         </Select>
       </div>
+
+      {/* 音量调整是否需要，浏览器无法调节系统音量，只能调节某个音视频标签的音量 */}
+      {/* <div className={styles.line}>
+        <div className={styles.l}>音量调整 :</div>
+        <div className={styles.r}>
+          <Slider
+            range={false}
+            defaultValue={volume}
+            onAfterChange={onVolumeChange}
+          />
+        </div>
+      </div> */}
       <div className={styles.headphone_preview}>
         <img
           onClick={toggleAudioPlayer}
@@ -67,10 +92,12 @@ const HeadphoneItem: FC = () => {
         </div>
       </div>
       <div className={styles.control_bottom}>
-        <Button type="primary" onClick={() => nextStep()}>
-          Able to hear
+        <Button type="primary" onClick={() => nextStep('Microphone')}>
+          下一步
         </Button>
-        <Button onClick={() => nextStep()}>Unable to hear</Button>
+        <Button onClick={() => handleAudioOutputDeviceChange(speakerCurrentID)}>
+          重试
+        </Button>
       </div>
     </div>
   );

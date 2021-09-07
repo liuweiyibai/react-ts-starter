@@ -2,11 +2,10 @@ import { FC, useEffect } from 'react';
 import { Button } from 'antd';
 import styles from './style.module.less';
 // import { getOsType } from 'utils/tool';
+import { BasicProps } from './interface';
 
-const SystemItem: FC = () => {
-  const nextStep = () => {};
+const SystemItem: FC<BasicProps> = ({ nextStep }) => {
   useEffect(() => {
-    console.log(333);
     return () => {};
   }, []);
   return (
@@ -54,7 +53,7 @@ const SystemItem: FC = () => {
         </div>
       </div>
       <div className={styles.control_bottom}>
-        <Button type="primary" onClick={() => nextStep()}>
+        <Button type="primary" onClick={() => nextStep('Camera')}>
           下一步
         </Button>
       </div>

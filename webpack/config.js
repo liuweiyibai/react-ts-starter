@@ -171,6 +171,7 @@ exports.devServerConfig = overrideDevServer(config => {
     ...config,
     compress: true,
     disableHostCheck: true,
+    https: true,
     hot: true,
     overlay: {
       warnings: false,

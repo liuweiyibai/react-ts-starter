@@ -72,10 +72,11 @@
     justify-content: center;
     margin-top: 16px;
 
-    canvas {
+    video {
       width: 418px;
       height: 235px;
       background-color: #d8d8d8;
+      object-fit: fill;
     }
   }
 }
@@ -116,7 +117,15 @@
       }
     }
   }
+
+  :global {
+    .ant-slider {
+      margin: 0;
+    }
+  }
 }
 .microphone {
-  //
+  .preview_audio {
+    display: none;
+  }
 }

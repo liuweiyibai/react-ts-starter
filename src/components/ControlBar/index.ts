@@ -1,3 +1,5 @@
-import ControlBar from './ControlBar';
+// import ControlBar from './ControlBar';
 
-export default ControlBar;
+export { default } from './ControlBar';
+
+// export default ControlBar;
