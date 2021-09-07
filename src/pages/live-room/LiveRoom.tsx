@@ -1,15 +1,17 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import styles from './LiveRoom.module.less';
 import ControlBar from 'components/ControlBar';
 
 const LiveRoom: FC = () => {
+  const navigate = useNavigate();
   return (
     <div className={styles.liveRoomWrap}>
       <div className={styles.header}>
         <div className={styles.roomId}>ID: 123456-6897548-9686</div>
         <div className={styles.back}>
-          <Button danger type="primary">
+          <Button danger type="primary" onClick={() => navigate('/calendar')}>
             退出直播间
           </Button>
         </div>

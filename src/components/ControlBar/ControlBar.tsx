@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import { FC } from 'react';
 import styles from './styles/ControlBar.module.less';
 import LiveAudioButton from './LiveAudioButton';
 import LiveCameraButton from './LiveCameraButton';

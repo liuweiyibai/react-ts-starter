@@ -1,5 +1,6 @@
 import { useState, FC } from 'react';
 import { Select, Spin } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { ReactComponent as ClockSvg } from 'assets/svgs/clock.svg';
 import styles from './style.module.less';
@@ -39,6 +40,7 @@ const FLAG_TAG: {
   1: 'In Class',
   2: 'Course Over',
 };
+const currentTimeZone = getTimeZone();
 
 const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
   const [classList, setClassList] = useState<TypeClass[]>([
@@ -60,9 +62,12 @@ const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [filterFlag, setFilterFlag] = useState('-1');
-  const currentTimeZone = getTimeZone();
+  const navigate = useNavigate();
+
   const onFlagChange = () => {};
-  const onClassClick = (item: any) => {};
+  const onClassClick = (item: TypeClass) => {
+    navigate(`/live-room/${item.roomId}`);
+  };
 
   return (
     <Spin wrapperClassName={styles.course_list_wrapper} spinning={isLoading}>

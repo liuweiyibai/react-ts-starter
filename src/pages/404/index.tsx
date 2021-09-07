@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 /* eslint-disable */
 interface INoMatchPageProps {}

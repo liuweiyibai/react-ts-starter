@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStores } from 'store/hooks';
 
@@ -17,15 +17,15 @@ const Home: FC = (): JSX.Element => {
       }}
     >
       欢迎使用系统
-      <div>{appStore._loading ? 'hh' : '呵呵'}</div>
+      {/* <div>{appStore._loading ? 'hh' : '呵呵'}</div> */}
       <div>
-        {appStore._currentItem.map(t => (
+        {/* {appStore._currentItem.map(t => (
           <h2 key={t.name}>{t.name}</h2>
-        ))}
+        ))} */}
       </div>
       <button
         onClick={() => {
-          appStore._loading = !appStore._loading;
+          // appStore._loading = !appStore._loading;
         }}
       >
         更新状态

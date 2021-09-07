@@ -8,8 +8,6 @@ import { formatSearch } from 'utils/tool';
 
 import styles from './style.module.less';
 
-/* eslint-disable */
-
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -18,7 +16,7 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-//登录页面
+// 登录页面
 const Login: FC = () => {
   const { loginLoading, hasToken, loginAction } = useStores('userStore');
   const navigate = useNavigate();
@@ -37,7 +35,7 @@ const Login: FC = () => {
   };
 
   useEffect(() => {
-    //登录了之后要跳转到home页面
+    // 登录了之后要跳转到home页面
     const token: string | null = sessionStorage.getItem('token');
     if (hasToken || (token && token.length > 0)) {
       const search = formatSearch(location.search);
