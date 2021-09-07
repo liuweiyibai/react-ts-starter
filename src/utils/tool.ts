@@ -72,3 +72,15 @@ export const getOsInfo = () => {
   }
   return name;
 };
+
+export const processChatBoxLinks = (str: string, id: string) => {
+  const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-|%)+)/g;
+
+  if (reg.test(str)) {
+    return str.replace(
+      reg,
+      `<a href="$1$2" id="${id}" target="_blank">$1$2</a>`,
+    );
+  }
+  return str;
+};

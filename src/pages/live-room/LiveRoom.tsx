@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Button } from 'antd';
 import styles from './LiveRoom.module.less';
 import ControlBar from 'components/ControlBar';
+import ComponentIM from 'components/IM';
 
 const LiveRoom: FC = () => {
   return (
@@ -26,6 +27,10 @@ const LiveRoom: FC = () => {
               id="preview-video"
             />
           </div>
+
+          <div className={styles.footer}>
+            <ControlBar />
+          </div>
         </div>
 
         <div className={styles['right-side']}>
@@ -37,12 +42,11 @@ const LiveRoom: FC = () => {
               id="camera-video"
             />
           </div>
-          <div className={styles['function-box']} />
-        </div>
-      </div>
 
-      <div className={styles.footer}>
-        <ControlBar />
+          <div className={styles['function-box']}>
+            <ComponentIM />
+          </div>
+        </div>
       </div>
     </div>
   );

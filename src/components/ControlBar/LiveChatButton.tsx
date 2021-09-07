@@ -17,7 +17,7 @@ class LiveChatButton extends React.Component<ILiveChatButton> {
       <div>
         <LiveButton
           icon={this.currentIcon}
-          title="Share"
+          title="Chat"
           hasUpperIcon={false}
           hasBadge={false}
           badgeNum={0}

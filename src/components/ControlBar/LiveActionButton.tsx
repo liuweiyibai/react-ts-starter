@@ -18,7 +18,7 @@ class LiveActionButton extends React.Component<ILiveActionButton> {
       <div>
         <LiveButton
           icon={this.currentIcon}
-          title="Share"
+          title="START"
           hasUpperIcon={false}
           hasBadge={false}
           badgeNum={0}

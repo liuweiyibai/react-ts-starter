@@ -17,7 +17,7 @@ class LiveUsersButton extends React.Component<ILiveUsersButton> {
       <div>
         <LiveButton
           icon={this.currentIcon}
-          title="Share"
+          title="Users"
           hasUpperIcon={false}
           hasBadge={false}
           badgeNum={0}
