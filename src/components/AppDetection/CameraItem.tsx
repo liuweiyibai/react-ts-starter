@@ -79,4 +79,4 @@ const CameraItem: FC<BasicProps> = ({ nextStep }) => {
   );
 };
 
-export default observer(CameraItem);
+export default CameraItem;

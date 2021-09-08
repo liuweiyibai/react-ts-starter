@@ -12,6 +12,8 @@ const {
   fixBabelImports,
   useBabelRc,
 } = require('customize-cra');
+
+const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
@@ -123,7 +125,7 @@ exports.webpackOveride = override(
     },
   }),
 
-  process.env.REACT_APP_BUNDLE_VISUALIZE === 'true' &&
+  process.env.ENABLE_BUNDLE_ANALYZER === 'true' &&
     addBundleVisualizer({
       analyzerMode: 'server',
     }),
@@ -147,6 +149,8 @@ exports.webpackOveride = override(
       allowAsyncCycles: false,
       cwd: process.cwd(),
     }),
+
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/),
   ),
 
   // 开发模式下生成 css souceMap

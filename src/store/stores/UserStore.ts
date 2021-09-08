@@ -40,7 +40,7 @@ export default class UserStore {
       const token = resp.data as string;
       this.token = token;
       sessionStorage.setItem('token', token);
-      this.loginLoading = false;
+      // this.loginLoading = false;
       return true;
     }
   }

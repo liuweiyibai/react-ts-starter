@@ -24,9 +24,9 @@ const Login: FC = () => {
   const onFinish = async (values: any) => {
     const resp = await loginAction(values);
     if (resp) {
-      const search = formatSearch(location.search);
-      const from = search?.from || { pathname: '/' };
-      navigate(from);
+      // const search = formatSearch(location.search);
+      // const from = search?.from || { pathname: '/' };
+      // navigate(from);
     }
   };
 
