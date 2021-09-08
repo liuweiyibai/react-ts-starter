@@ -7,6 +7,8 @@ import { useStores } from 'store/hooks';
 import { formatSearch } from 'utils/tool';
 
 import styles from './style.module.less';
+import { session } from 'utils/storage';
+import { TOKEN } from 'utils/var';
 
 const layout = {
   labelCol: { span: 8 },
@@ -24,9 +26,9 @@ const Login: FC = () => {
   const onFinish = async (values: any) => {
     const resp = await loginAction(values);
     if (resp) {
-      // const search = formatSearch(location.search);
-      // const from = search?.from || { pathname: '/' };
-      // navigate(from);
+      const search = formatSearch(location.search);
+      const from = search?.from || { pathname: '/' };
+      navigate(from);
     }
   };
 
@@ -36,7 +38,7 @@ const Login: FC = () => {
 
   useEffect(() => {
     // 登录了之后要跳转到home页面
-    const token: string | null = sessionStorage.getItem('token');
+    const token: string | null = session.get(TOKEN);
     if (hasToken || (token && token.length > 0)) {
       const search = formatSearch(location.search);
       const from = search?.from || { pathname: '/' };

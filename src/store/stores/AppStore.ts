@@ -3,10 +3,11 @@ import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
 import type { ZegoDeviceInfos } from 'zego-express-engine-webrtc/sdk/code/zh/ZegoExpressEntity.web';
 
 import { storage } from 'utils/storage';
-
-const CAMERA_CURRENT_ID = 'CAMERA_CURRENT_ID';
-const SPEAKER_CURRENT_ID = 'SPEAKER_CURRENT_ID';
-const MICROPHONE_CURRENT_ID = 'MICROPHONE_CURRENT_ID';
+import {
+  CAMERA_CURRENT_ID,
+  SPEAKER_CURRENT_ID,
+  MICROPHONE_CURRENT_ID,
+} from 'utils/var';
 
 type TypeZegoDeviceInfos = ZegoDeviceInfos | null;
 

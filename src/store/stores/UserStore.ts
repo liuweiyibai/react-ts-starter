@@ -1,12 +1,14 @@
 import { makeObservable, observable, action, computed } from 'mobx';
 import { sleep } from 'utils/tool';
 import { userLogin } from 'api';
+import { session } from 'utils/storage';
+import { TOKEN } from 'utils/var';
 
 export interface TypeUserInfo {
   [key: string]: any;
 }
 
-const appToken = sessionStorage.getItem('token');
+const appToken = session.get(TOKEN);
 export default class UserStore {
   public token = appToken;
   public userInfo: TypeUserInfo = {};
@@ -39,8 +41,8 @@ export default class UserStore {
     if (resp.code === 200) {
       const token = resp.data as string;
       this.token = token;
-      sessionStorage.setItem('token', token);
-      // this.loginLoading = false;
+      session.set(TOKEN, token);
+      this.loginLoading = false;
       return true;
     }
   }
@@ -53,7 +55,7 @@ export default class UserStore {
   }
 
   public loginOutAction() {
-    sessionStorage.setItem('token', '');
+    session.remove(TOKEN);
     this.token = '';
   }
 }
