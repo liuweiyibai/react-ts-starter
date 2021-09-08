@@ -2,6 +2,12 @@ import { action, makeObservable, observable } from 'mobx';
 import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
 import type { ZegoDeviceInfos } from 'zego-express-engine-webrtc/sdk/code/zh/ZegoExpressEntity.web';
 
+import { storage } from 'utils/storage';
+
+const CAMERA_CURRENT_ID = 'CAMERA_CURRENT_ID';
+const SPEAKER_CURRENT_ID = 'SPEAKER_CURRENT_ID';
+const MICROPHONE_CURRENT_ID = 'MICROPHONE_CURRENT_ID';
+
 type TypeZegoDeviceInfos = ZegoDeviceInfos | null;
 
 // 初始化实例
@@ -26,30 +32,54 @@ export default class AppStore {
       deviceInfo: observable,
       cameraCurrentID: observable,
       speakerCurrentID: observable,
+      microphoneCurrentID: observable,
       toggleVisibleAppDetection: action.bound,
       getDevicesAction: action.bound,
       userListMap: observable,
       setUserListMap: action.bound,
+      changeCameraCurrentIDAction: action.bound,
+      changeMicrophoneCurrentIDAction: action.bound,
+      changeSpeakerCurrentIDAction: action.bound,
     });
   }
   toggleVisibleAppDetection() {
     this.visibleAppDetection = !this.visibleAppDetection;
   }
 
+  // 修改摄像头 id
+  changeCameraCurrentIDAction(id: string) {
+    storage.set(CAMERA_CURRENT_ID, id);
+    this.cameraCurrentID = id;
+  }
+
+  // 修改麦克风 id
+  changeMicrophoneCurrentIDAction(id: string) {
+    storage.set(MICROPHONE_CURRENT_ID, id);
+    this.microphoneCurrentID = id;
+  }
+
+  // 修改扬声器 id
+  changeSpeakerCurrentIDAction(id: string) {
+    storage.set(SPEAKER_CURRENT_ID, id);
+    this.speakerCurrentID = id;
+  }
+
   async getDevicesAction() {
     const resp = await zgEngine.enumDevices();
     if (resp.cameras.length) {
-      this.cameraCurrentID = resp.cameras[0].deviceID;
+      this.cameraCurrentID =
+        storage.get(CAMERA_CURRENT_ID) || resp.cameras[0].deviceID;
     }
 
     if (resp.speakers.length) {
-      this.speakerCurrentID = resp.speakers[0].deviceID;
+      this.speakerCurrentID =
+        storage.get(SPEAKER_CURRENT_ID) || resp.speakers[0].deviceID;
     }
 
     if (resp.microphones.length) {
-      this.microphoneCurrentID = resp.microphones[0].deviceID;
+      this.microphoneCurrentID =
+        storage.get(MICROPHONE_CURRENT_ID) || resp.microphones[0].deviceID;
     }
-    console.log(resp);
     this.deviceInfo = resp;
   }
 

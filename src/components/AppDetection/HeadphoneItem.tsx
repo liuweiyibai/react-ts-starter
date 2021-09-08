@@ -1,4 +1,4 @@
-import { Button, Select, Slider } from 'antd';
+import { Button, Select } from 'antd';
 import { FC, useState, useEffect } from 'react';
 import { useAudio } from 'react-use';
 
@@ -15,14 +15,18 @@ import { BasicProps } from './interface';
 
 const HeadphoneItem: FC<BasicProps> = ({ nextStep }) => {
   const [isAduioPlaying, setIsAduioPlaying] = useState(false);
-  const { deviceInfo, speakerCurrentID } = useStores('appStore');
-  const [Audio, status, controls, audioRef] = useAudio({
+  const { deviceInfo, speakerCurrentID, changeSpeakerCurrentIDAction } =
+    useStores('appStore');
+
+  const [Audio, , controls, audioRef] = useAudio({
     src: soundSrc,
     autoPlay: false,
   });
 
   const handleAudioOutputDeviceChange = (deviceID: string) => {
+    changeSpeakerCurrentIDAction(deviceID);
     setOutAudioDevices(audioRef.current, deviceID);
+    controls.play();
   };
 
   const toggleAudioPlayer = () => {
@@ -40,19 +44,13 @@ const HeadphoneItem: FC<BasicProps> = ({ nextStep }) => {
     };
   }, []);
 
-  useEffect(() => {}, [status]);
-  const volume = status.volume;
-
-  const onVolumeChange = (count: number) => {
-    // audioRef.current?.volume = count;
-  };
   return (
     <div className={styles.headphone}>
       {Audio}
       <div className={styles.line}>
         <div className={styles.l}>Speaker :</div>
         <Select
-          defaultValue={speakerCurrentID}
+          value={speakerCurrentID}
           style={{ width: 330 }}
           onChange={handleAudioOutputDeviceChange}
         >
@@ -66,17 +64,6 @@ const HeadphoneItem: FC<BasicProps> = ({ nextStep }) => {
         </Select>
       </div>
 
-      {/* 音量调整是否需要，浏览器无法调节系统音量，只能调节某个音视频标签的音量 */}
-      {/* <div className={styles.line}>
-        <div className={styles.l}>音量调整 :</div>
-        <div className={styles.r}>
-          <Slider
-            range={false}
-            defaultValue={volume}
-            onAfterChange={onVolumeChange}
-          />
-        </div>
-      </div> */}
       <div className={styles.headphone_preview}>
         <img
           onClick={toggleAudioPlayer}

@@ -1,5 +1,6 @@
 import { Select, Progress, Button } from 'antd';
 import { FC, useEffect, useRef, useState } from 'react';
+import { observer } from 'mobx-react';
 import { useStores } from 'store/hooks';
 
 import { BasicProps } from './interface';
@@ -9,15 +10,35 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
   const [soundLevel, setSoundLevel] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null!);
   const streamRef = useRef<any>(null);
-  const { microphoneCurrentID, deviceInfo, zgEngine } = useStores('appStore');
+  const {
+    microphoneCurrentID,
+    deviceInfo,
+    zgEngine,
+    changeMicrophoneCurrentIDAction,
+  } = useStores('appStore');
 
-  const handleAudioInputDeviceChange = () => {};
+  const handleAudioInputDeviceChange = (id: string) => {
+    changeMicrophoneCurrentIDAction(id);
+  };
 
   useEffect(() => {
     // 设置是否监听音浪及音浪回调间隔时间
     zgEngine.setSoundLevelDelegate(true, 100);
 
+    // 本地采集音频声浪回调
+    zgEngine.on('capturedSoundLevelUpdate', soundLevel => {
+      setSoundLevel(soundLevel);
+    });
+    return () => {
+      zgEngine.off('capturedSoundLevelUpdate');
+    };
+  }, []);
+
+  useEffect(() => {
     const startStream = async () => {
+      if (streamRef.current) {
+        zgEngine.destroyStream(streamRef.current);
+      }
       streamRef.current = await zgEngine.createStream({
         camera: { video: false, audioInput: microphoneCurrentID },
       });
@@ -26,13 +47,7 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
 
     startStream();
 
-    // 本地采集音频声浪回调
-    zgEngine.on('capturedSoundLevelUpdate', soundLevel => {
-      setSoundLevel(soundLevel);
-    });
-
     return () => {
-      zgEngine.off('capturedSoundLevelUpdate');
       if (streamRef.current) {
         zgEngine.destroyStream(streamRef.current);
       }
@@ -43,7 +58,7 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
     <div className={styles.microphone}>
       <video ref={videoRef} autoPlay className={styles.preview_audio} />
       <div className={styles.line}>
-        <div className={styles.l}>Microphone :</div>
+        <div className={styles.l}>麦克风 :</div>
         <Select
           defaultValue={microphoneCurrentID}
           style={{ width: 330 }}
@@ -74,4 +89,4 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
   );
 };
 
-export default MicrophoneItem;
+export default observer(MicrophoneItem);

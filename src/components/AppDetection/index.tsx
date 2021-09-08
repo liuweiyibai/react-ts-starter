@@ -24,6 +24,7 @@ const MENU_ITEMS = [
     className: 'default',
     icon: SystemNorSvg,
     activeIcon: SystemActSvg,
+    Content: SystemItem,
   },
   {
     value: 'Camera',
@@ -31,6 +32,7 @@ const MENU_ITEMS = [
     className: 'default',
     icon: CameraNarSvg,
     activeIcon: CameraActSvg,
+    Content: CameraItem,
   },
   {
     value: 'Headphone',
@@ -38,6 +40,7 @@ const MENU_ITEMS = [
     className: 'default',
     icon: HeadphoneNarSvg,
     activeIcon: HeadphoneActSvg,
+    Content: HeadphoneItem,
   },
   {
     value: 'Microphone',
@@ -45,25 +48,7 @@ const MENU_ITEMS = [
     className: 'default',
     icon: MicrophoneNarSvg,
     activeIcon: MicrophoneActSvg,
-  },
-];
-
-const MenuContents = [
-  {
-    value: 'System',
-    Component: SystemItem,
-  },
-  {
-    value: 'Camera',
-    Component: CameraItem,
-  },
-  {
-    value: 'Headphone',
-    Component: HeadphoneItem,
-  },
-  {
-    value: 'Microphone',
-    Component: MicrophoneItem,
+    Content: MicrophoneItem,
   },
 ];
 
@@ -86,8 +71,8 @@ const AppDetection: FC<PropsAppDetection> = ({ onClose }) => {
   };
 
   const renderContent = (): React.ReactNode | null => {
-    const Item = MenuContents.find(t => t.value === currentMenuKey);
-    return Item ? <Item.Component nextStep={nextStep} /> : null;
+    const Item = MENU_ITEMS.find(t => t.value === currentMenuKey);
+    return Item ? <Item.Content nextStep={nextStep} /> : null;
   };
 
   return (

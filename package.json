@@ -92,6 +92,7 @@
     "stylelint-less": "^1.0.1",
     "stylelint-prettier": "^1.2.0",
     "stylelint-scss": "^3.20.1",
+    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-dashboard": "^3.3.5",
     "webpackbar": "^5.0.0-3"
   }

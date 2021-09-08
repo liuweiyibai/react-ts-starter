@@ -1,19 +1,70 @@
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observable, computed, makeObservable } from 'mobx';
-import { Popover, Radio, Divider } from 'antd';
-import LiveButton from './LiveButton';
+import { observable, makeObservable } from 'mobx';
+import { Popover, Radio, Divider, RadioChangeEvent } from 'antd';
+import { isEmpty } from 'lodash-es';
 
-import iconMicOn0 from '../../assets/images/icon-mic-on-0.png';
-import iconMicOn20 from '../../assets/images/icon-mic-on-20.png';
-import iconMicOn40 from '../../assets/images/icon-mic-on-40.png';
-import iconMicOn60 from '../../assets/images/icon-mic-on-60.png';
-import iconMicOn80 from '../../assets/images/icon-mic-on-80.png';
-import iconMicOn100 from '../../assets/images/icon-mic-on-100.png';
-import iconMicOff from '../../assets/images/icon-mic-off.png';
-import iconMicDis from '../../assets/images/icon-mic-dis.png';
+import AppStore from 'store/stores/AppStore';
+import LiveButton from './LiveButton';
+import { getCurrentIconSrc } from './utils';
+import { useStores } from 'store/hooks';
+
+const PopoverContent = observer(() => {
+  const {
+    deviceInfo,
+    microphoneCurrentID,
+    speakerCurrentID,
+    changeMicrophoneCurrentIDAction,
+    changeSpeakerCurrentIDAction,
+  } = useStores('appStore');
+
+  const onMicrophoneChange = (e: RadioChangeEvent) => {
+    changeMicrophoneCurrentIDAction(e.target.value);
+  };
+
+  const onSpeakerChange = (e: RadioChangeEvent) => {
+    changeSpeakerCurrentIDAction(e.target.value);
+  };
+
+  return (
+    <div className="live-popover">
+      <h3 className="title">麦克风</h3>
+      <Radio.Group
+        onChange={onMicrophoneChange}
+        value={microphoneCurrentID}
+        key="microphone"
+      >
+        {deviceInfo?.microphones?.map(item => {
+          return (
+            <Radio value={item.deviceID} key={`camera-${item.deviceID}`}>
+              {item.deviceName}
+            </Radio>
+          );
+        })}
+      </Radio.Group>
+
+      <Divider />
+
+      <h3 className="title">扬声器</h3>
+      <Radio.Group
+        onChange={onSpeakerChange}
+        value={speakerCurrentID}
+        key="speaker"
+      >
+        {deviceInfo?.speakers?.map(item => {
+          return (
+            <Radio value={item.deviceID} key={`camera-${item.deviceID}`}>
+              {item.deviceName}
+            </Radio>
+          );
+        })}
+      </Radio.Group>
+    </div>
+  );
+});
 
 interface ILiveAudioButton {
+  appStore?: AppStore;
   [key: string]: any;
 }
 
@@ -22,7 +73,8 @@ export interface IDevices {
   microphones?: { deviceID: string; deviceName: string }[];
   speakers?: { deviceID: string; deviceName: string }[];
 }
-
+@inject('appStore', 'userStore')
+@observer
 class LiveAudioButton extends React.Component<ILiveAudioButton> {
   // @observable currentIcon = iconMicOn0;
 
@@ -33,7 +85,7 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
   @observable microphoneLevel = 0;
 
   @observable speakerIsOpen = true;
-  @observable speakerCurrentID = 'speakerCurrentID';
+  // @observable speakerCurrentID = 'speakerCurrentID';
   // @observable speakerCurrentName;
   @observable speakerList: IDevices['speakers'] = [];
 
@@ -49,59 +101,12 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
     makeObservable(this);
   }
 
-  @computed get popoverContent() {
-    let { microphoneCurrentID, microphoneList, speakerCurrentID, speakerList } =
-      this;
-
-    return (
-      <div className="live-popover">
-        <h3 className="title">Microphone</h3>
-        <Radio.Group
-          onChange={this.onMicrophoneChange}
-          value={microphoneCurrentID}
-          key="microphone"
-        >
-          {microphoneList?.map(item => {
-            return (
-              <Radio value={item.deviceID} key={`camera-${item.deviceID}`}>
-                {item.deviceName}
-              </Radio>
-            );
-          })}
-        </Radio.Group>
-
-        <Divider />
-
-        <h3 className="title">Speaker</h3>
-        <Radio.Group
-          onChange={this.onSpeakerChange}
-          value={speakerCurrentID}
-          key="speaker"
-        >
-          {speakerList?.map(item => {
-            return (
-              <Radio value={item.deviceID} key={`camera-${item.deviceID}`}>
-                {item.deviceName}
-              </Radio>
-            );
-          })}
-        </Radio.Group>
-      </div>
-    );
-  }
-
-  @computed get currentIcon() {
-    if (this.isDisable) return iconMicDis;
-
-    if (this.microphoneIsOpen) {
-      if (this.microphoneLevel < 5) return iconMicOn0;
-      if (this.microphoneLevel < 20) return iconMicOn20;
-      if (this.microphoneLevel < 40) return iconMicOn40;
-      if (this.microphoneLevel < 60) return iconMicOn60;
-      if (this.microphoneLevel < 80) return iconMicOn80;
-      if (this.microphoneLevel <= 200) return iconMicOn100;
+  componentDidMount() {
+    // 检查 store 中是否存在 设备列表
+    const { appStore } = this.props;
+    if (isEmpty(appStore?.deviceInfo)) {
+      appStore?.getDevicesAction();
     }
-    return iconMicOff;
   }
 
   onUpperClick() {
@@ -123,22 +128,18 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
   }
 
   render() {
+    const { isDisable, microphoneLevel, microphoneIsOpen, props } = this;
+    const { appStore } = props;
     return (
-      <div>
-        <Popover
-          placement="top"
-          arrowPointAtCenter
-          content={this.popoverContent}
-          visible={this.isPopoverVisible}
-          onVisibleChange={visible => {
-            this.isPopoverVisible = visible;
-          }}
-        >
-          <div style={{ width: '80px' }} />
-        </Popover>
-
+      <Popover
+        placement="top"
+        arrowPointAtCenter
+        content={<PopoverContent />}
+        // visible={this.isPopoverVisible}
+        trigger="click"
+      >
         <LiveButton
-          icon={this.currentIcon}
+          icon={getCurrentIconSrc(isDisable, microphoneLevel, microphoneIsOpen)}
           title="Mic"
           hasUpperIcon={true}
           hasBadge={false}
@@ -149,9 +150,9 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
             this.onUpperClick();
           }}
         />
-      </div>
+      </Popover>
     );
   }
 }
 
-export default observer(LiveAudioButton);
+export default LiveAudioButton;
