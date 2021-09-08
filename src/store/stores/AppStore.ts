@@ -19,6 +19,7 @@ export default class AppStore {
   public cameraCurrentID = '';
   public speakerCurrentID = '';
   public microphoneCurrentID = '';
+  public userListMap = new Map();
   constructor() {
     makeObservable(this, {
       visibleAppDetection: observable,
@@ -27,6 +28,8 @@ export default class AppStore {
       speakerCurrentID: observable,
       toggleVisibleAppDetection: action.bound,
       getDevicesAction: action.bound,
+      userListMap: observable,
+      setUserListMap: action.bound,
     });
   }
   toggleVisibleAppDetection() {
@@ -48,5 +51,12 @@ export default class AppStore {
     }
     console.log(resp);
     this.deviceInfo = resp;
+  }
+
+  setUserListMap(
+    key: string,
+    val: { userID: string; userName: string; online: boolean },
+  ) {
+    this.userListMap.set(key, val);
   }
 }

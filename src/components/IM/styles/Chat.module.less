@@ -6,15 +6,16 @@
   .message-list {
     flex-direction: column;
     width: 100%;
-    height: calc(100% - 100px);
-    padding: 0 5px;
+    height: calc(100% - 50px);
+    padding: 0 5px 10px 5px;
     overflow-x: hidden;
     overflow-y: auto;
   }
 
   .input-wrp {
-    width: 100%;
-    height: 100px;
+    width: 94%;
+    height: 50px;
+    margin: 0 auto;
     border-top: 1px solid #505050;
 
     .ant-input {
@@ -55,41 +56,5 @@
     justify-content: center;
     font-size: 14px;
     color: #4396a5;
-  }
-}
-
-.member-container {
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 14px 16px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  font-size: 14px;
-
-  .member-item {
-    flex-direction: row;
-    align-items: center;
-    height: 50px;
-    color: rgba(255, 255, 255, 1);
-
-    .icon {
-      font-size: 20px;
-    }
-
-    img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .online-name {
-      margin-left: 10px;
-      color: #ffda3f;
-    }
-
-    .offline-name {
-      margin-left: 10px;
-      color: rgba(255, 255, 255, 0.6);
-    }
   }
 }

@@ -9,8 +9,12 @@ const { TabPane } = Tabs;
 function IM() {
   const [defaultActiveKey, setDefaultActiveKey] = useState('chat');
 
+  const onChangeTab = (activeKey: string) => {
+    setDefaultActiveKey(activeKey);
+  };
+
   return (
-    <Tabs activeKey={defaultActiveKey}>
+    <Tabs activeKey={defaultActiveKey} onChange={onChangeTab}>
       <TabPane tab="Chat" key="chat">
         <Chat />
       </TabPane>

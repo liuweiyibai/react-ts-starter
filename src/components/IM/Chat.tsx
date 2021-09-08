@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Input } from 'antd';
 import {
   Realtime,
@@ -11,6 +11,10 @@ import {
 import { useStores } from 'store/hooks';
 import styles from './styles/Chat.module.less';
 import { processChatBoxLinks } from 'utils/tool';
+import {
+  ZegoRTMEvent,
+  ZegoUser,
+} from 'zego-express-engine-webrtc/sdk/src/common/zego.entity';
 
 // 经过摘取字段的消息
 export interface IMsg {
@@ -32,16 +36,11 @@ interface ICourse {
 
 const MAX_MESSAGE_COUNT = 3000;
 
-const leanCloud = {
-  appId: 'BmhUeafJjm1eeWxttJSTS17U-MdYXbMMI',
-  appKey: 'QPiyjhIznjxHML06OoSsHtBY',
-};
-
 function createRealtimeClient(): Realtime | null {
   try {
     return new Realtime({
-      appId: leanCloud.appId,
-      appKey: leanCloud.appKey,
+      appId: process.env.REACT_APP_LEANCLOUD_ID!,
+      appKey: process.env.REACT_APP_LEANCLOUD_KEY!,
     });
   } catch (e) {
     console.warn(e);
@@ -52,16 +51,57 @@ function createRealtimeClient(): Realtime | null {
 const realtime = createRealtimeClient()!;
 
 function Chat() {
-  const { userInfo } = useStores('userStore');
+  // const { userInfo } = useStores('userStore');
+  const userInfo = { id: 'test', userName: 'zyd-test', userId: 'test-userId' };
+
+  const { userListMap, setUserListMap, zgEngine } = useStores('appStore');
+
   const messageListDom = useRef<HTMLDivElement>(null!);
   const [messages, setMessages] = useState<IMsg[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [course, setCourse] = useState<ICourse>({});
+  const [course, setCourse] = useState<ICourse>(() => {
+    return {
+      id: 523614,
+      courseName: 'zyd-test-210810',
+      teacherId: '5g345ec3',
+      roomId: 'test-20210819065330-100000643',
+      conversationId: '611dffee8eaca61ee5e043e1',
+      subId: 70,
+      liveAt: '2021-09-08T00:56:21',
+      liveDuration: 999,
+      flag: 4,
+      createdBy: '',
+      updatedBy: '',
+      createdAt: '2021-08-19T06:53:24',
+      updatedAt: '2021-09-08T06:25:33',
+      deleted: 0,
+      casId: 0,
+      optionId: 0,
+      projectBelong: 1,
+      campusId: 0,
+      ciStatus: 1,
+    };
+  });
 
   const [conversation, setConversation] =
     useState<PresistentConversation | null>(null);
   const [imClient, setImClient] = useState<IMClient | null>(null);
+
+  useEffect(() => {
+    initIMClient();
+    initRoomUserList();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (zgEngine) zgEngine.off('roomUserUpdate');
+    };
+  }, [zgEngine]);
+
+  useEffect(() => {
+    initIMEvent();
+  }, [imClient]);
 
   const sendMessage = async () => {
     if (!conversation) return;
@@ -83,7 +123,7 @@ function Chat() {
     if (messages.length > MAX_MESSAGE_COUNT) {
       setMessages(preMsg => {
         preMsg.shift();
-        return preMsg;
+        return [...preMsg];
       });
     }
 
@@ -96,12 +136,23 @@ function Chat() {
         content: processChatBoxLinks(messageToSent._lctext, messageToSent.id),
         type: messageToSent._lcattrs.user.type,
       });
-      return preMsg;
+      return [...preMsg];
     });
 
     messageListDom.current.scrollTop = messageListDom.current.scrollHeight;
 
     setInputValue('');
+  };
+
+  const initRoomUserList = () => {
+    const env = process.env;
+    let zgUserId = `${env}-mt-${userInfo.userId}`;
+
+    setUserListMap(zgUserId, {
+      userID: zgUserId,
+      userName: userInfo.userName,
+      online: true,
+    });
   };
 
   const initIMClient = async () => {
@@ -128,7 +179,6 @@ function Chat() {
                 userId: _msg._lcattrs.user.id,
                 userName: _msg._lcattrs.user.nickName,
                 anonymousName: _msg._lcattrs.user?.anonymousName,
-                // content: message.content._lctext,
                 content: processChatBoxLinks(_msg.content._lctext, _msg.id),
                 type: _msg._lcattrs.user.type,
               };
@@ -136,47 +186,69 @@ function Chat() {
           );
 
           setMessages(_messages);
-
-          messageListDom.current.scrollTop =
-            messageListDom.current.scrollHeight;
+          chatBoxScrollToBottom();
         })
         .catch(console.error.bind(console));
-
-      imClient.on(Event.MESSAGE, (_msg, conversation) => {
-        if (messages.length > MAX_MESSAGE_COUNT) {
-          setMessages(preMsg => {
-            preMsg.shift();
-            return preMsg;
-          });
-        }
-        // let count1 = messages?.length;
-
-        let _message: IMessageToSend = _msg!;
-
-        setMessages(preMsg => {
-          preMsg.push({
-            id: _message.id,
-            userId: _message._lcattrs.user.id,
-            userName: _message._lcattrs.user.nickName,
-            anonymousName: _message._lcattrs.user?.anonymousName,
-            content: processChatBoxLinks(_message.content._lctext, _message.id),
-            type: _message._lcattrs.user.type,
-          });
-          return preMsg;
-        });
-
-        // let count2 = this.messages?.length;
-
-        // this.props.zegoStore.newChatMessageCount = count2 - count1;
-
-        messageListDom.current.scrollTop = messageListDom.current.scrollHeight;
-      });
 
       await conversation.join();
       setIsReady(true);
     } catch (e) {
       console.error(e);
     }
+
+    zgEngine.on('roomUserUpdate', onRoomUserUpdate);
+  };
+
+  const initIMEvent = () => {
+    if (!imClient) return;
+
+    imClient.on(Event.MESSAGE, (_msg, conversation) => {
+      if (messages.length > MAX_MESSAGE_COUNT) {
+        setMessages(preMsg => {
+          preMsg.shift();
+          return [...preMsg];
+        });
+      }
+      // let count1 = messages?.length;
+
+      let _message: IMessageToSend = _msg!;
+
+      setMessages(preMsg => {
+        preMsg.push({
+          id: _message.id,
+          userId: _message._lcattrs.user.id,
+          userName: _message._lcattrs.user.nickName,
+          anonymousName: _message._lcattrs.user?.anonymousName,
+          content: processChatBoxLinks(_message.content._lctext, _message.id),
+          type: _message._lcattrs.user.type,
+        });
+        return [...preMsg];
+      });
+
+      // let count2 = this.messages?.length;
+
+      // this.props.zegoStore.newChatMessageCount = count2 - count1;
+
+      chatBoxScrollToBottom();
+    });
+  };
+
+  const chatBoxScrollToBottom = () => {
+    messageListDom.current.scrollTop = messageListDom.current.scrollHeight;
+  };
+
+  const onRoomUserUpdate: ZegoRTMEvent['roomUserUpdate'] = (
+    roomID: string,
+    updateType: 'DELETE' | 'ADD',
+    userList: ZegoUser[],
+  ) => {
+    userList.forEach(x => {
+      setUserListMap(x.userID, {
+        userID: x.userID,
+        userName: x.userName!,
+        online: updateType === 'ADD' ? true : false,
+      });
+    });
   };
 
   return (
@@ -203,7 +275,7 @@ function Chat() {
                     {msg.anonymousName}
                   </span>
                 )}
-                {msg.userName} :
+                {msg.userName}: &nbsp;
               </span>
               <span
                 className={styles['msg']}
