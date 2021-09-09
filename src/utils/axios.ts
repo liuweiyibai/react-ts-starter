@@ -54,28 +54,19 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-export interface Response<T = any> {
-  status: boolean;
-  message: string;
-  result: T;
-}
+// export interface Response<T = any> {
+//   status: boolean;
+//   message: string;
+//   result: T;
+// }
 
-export type MyResponse<T = any> = Promise<Response<T>>;
+// export type MyResponse<T = any> = Promise<Response<T>>;
+
 /**
- *
+ * 封装通用请求方法
  * @param method - request methods
  * @param url - request url
  * @param data - request data or params
  */
-export const request = <T = any>({
-  url,
-  method,
-  params,
-  data,
-}: AxiosRequestConfig) =>
-  axiosInstance.request<{}, AjaxResponse<T>>({
-    url,
-    method,
-    params,
-    data,
-  });
+export const request = <T = any>(params: AxiosRequestConfig) =>
+  axiosInstance.request<{}, AjaxResponse<T>>(params);

@@ -82,6 +82,13 @@ const LiveRoom: FC = props => {
     cameraVideo.srcObject = cameraStream;
   };
 
+  // const playScreenStream = async () => {
+  //   zgEngine.createStream();
+  // };
+
+  // const playCameraStream = async () => {
+  //   zgEngine.createStream();
+  // };
   return (
     <div className={styles.liveRoomWrap}>
       <div className={styles.header}>
