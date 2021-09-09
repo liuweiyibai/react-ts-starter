@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash-es';
 
 import AppStore from 'store/stores/AppStore';
 import LiveButton from './LiveButton';
-import { getCurrentIconSrc } from './utils';
+import { getCurrentAudioIconSrc } from './utils';
 import { useStores } from 'store/hooks';
 
 const PopoverContent = observer(() => {
@@ -127,30 +127,28 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
     // });
   }
 
+  handleVisibleChange = (visible: boolean) => {
+    this.isPopoverVisible = visible;
+  };
+
   render() {
     const { isDisable, microphoneLevel, microphoneIsOpen, props } = this;
-    const { appStore } = props;
+    // const { appStore } = props;
     return (
-      <Popover
-        placement="top"
-        arrowPointAtCenter
-        content={<PopoverContent />}
-        // visible={this.isPopoverVisible}
-        trigger="click"
-      >
-        <LiveButton
-          icon={getCurrentIconSrc(isDisable, microphoneLevel, microphoneIsOpen)}
-          title="Mic"
-          hasUpperIcon={true}
-          hasBadge={false}
-          badgeNum={0}
-          isDisable={false}
-          hoverTitle=""
-          onUpperClick={() => {
-            this.onUpperClick();
-          }}
-        />
-      </Popover>
+      <LiveButton
+        icon={getCurrentAudioIconSrc(
+          isDisable,
+          microphoneLevel,
+          microphoneIsOpen,
+        )}
+        title="Mic"
+        hasBadge={false}
+        badgeNum={0}
+        isDisable={false}
+        hoverTitle=""
+        hasUpperIcon
+        PopoverContent={<PopoverContent />}
+      />
     );
   }
 }

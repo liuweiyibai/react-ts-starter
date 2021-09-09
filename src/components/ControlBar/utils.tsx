@@ -7,7 +7,7 @@ import iconMicOn100 from 'assets/images/icon-mic-on-100.png';
 import iconMicOff from 'assets/images/icon-mic-off.png';
 import iconMicDis from 'assets/images/icon-mic-dis.png';
 
-const getCurrentIconSrc = (
+export const getCurrentAudioIconSrc = (
   isDisable: boolean,
   microphoneLevel: number,
   microphoneIsOpen: boolean,
@@ -24,4 +24,4 @@ const getCurrentIconSrc = (
   return iconMicOff;
 };
 
-export { getCurrentIconSrc };
+export const getCurrentCameraIconSrc = () => {};

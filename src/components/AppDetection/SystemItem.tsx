@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { Button } from 'antd';
 import styles from './style.module.less';
-// import { getOsType } from 'utils/tool';
+import { getOsName, getNetwork } from 'utils/tool';
 import { BasicProps } from './interface';
 
 const SystemItem: FC<BasicProps> = ({ nextStep }) => {
@@ -21,7 +21,7 @@ const SystemItem: FC<BasicProps> = ({ nextStep }) => {
       <br />
       <div className={styles.line}>
         <div className={styles.l}>OS :</div>
-        <div className={styles.r}>Mac</div>
+        <div className={styles.r}>{getOsName()}</div>
       </div>
       <div className={styles.line}>
         <div className={styles.l}>CPU :</div>
@@ -29,12 +29,7 @@ const SystemItem: FC<BasicProps> = ({ nextStep }) => {
       </div>
       <div className={styles.line}>
         <div className={styles.l}>Connect Cost :</div>
-        <div className={styles.r}>
-          {/* {this.connectCost.value === null
-            ? 'checking...'
-            : `${this.connectCost.value} ms`} */}
-          checking
-        </div>
+        <div className={styles.r}>{getNetwork()}</div>
       </div>
       <div className={styles.line}>
         <div className={styles.l}>Network Delay :</div>

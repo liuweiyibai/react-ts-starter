@@ -1,4 +1,4 @@
-const setOutAudioDevices = (element: any, sinkId: any) => {
+export const setOutAudioDevices = (element: any, sinkId: any) => {
   return new Promise((resolve, reject) => {
     if (typeof element.sinkId !== 'undefined') {
       element
@@ -23,4 +23,33 @@ const setOutAudioDevices = (element: any, sinkId: any) => {
   });
 };
 
-export { setOutAudioDevices };
+export const getCameraPermission = async () => {
+  try {
+    const mediastream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true,
+    });
+    mediastream.getTracks().forEach(track => {
+      track.stop();
+    });
+  } catch (error: any) {
+    if (String(error).indexOf('Permission denied') !== -1)
+      throw new Error('权限错误');
+  }
+};
+
+export const getAudioPermission = async () => {
+  try {
+    const mediastream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
+    });
+
+    mediastream.getTracks().forEach(track => {
+      track.stop();
+    });
+  } catch (error: any) {
+    if (String(error).indexOf('Permission denied') !== -1)
+      throw new Error('权限错误');
+  }
+};

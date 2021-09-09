@@ -89,29 +89,16 @@ class LiveCameraButton extends React.Component<ILiveCameraButton> {
 
   render() {
     return (
-      <Popover
-        placement="top"
-        arrowPointAtCenter
-        content={<PopoverContent />}
-        // visible={this.isPopoverVisible}
-        // onVisibleChange={visible => {
-        //   this.isPopoverVisible = visible;
-        // }}
-        trigger="click"
-      >
-        <LiveButton
-          icon={this.currentIcon}
-          title="Camera"
-          hasUpperIcon={true}
-          hasBadge={false}
-          badgeNum={0}
-          isDisable={false}
-          hoverTitle=""
-          onUpperClick={() => {
-            this.onUpperClick();
-          }}
-        />
-      </Popover>
+      <LiveButton
+        icon={this.currentIcon}
+        title="Camera"
+        hasBadge={false}
+        badgeNum={0}
+        isDisable={false}
+        hoverTitle=""
+        hasUpperIcon
+        PopoverContent={<PopoverContent />}
+      />
     );
   }
 }

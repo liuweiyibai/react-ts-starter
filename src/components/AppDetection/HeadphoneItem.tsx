@@ -3,7 +3,7 @@ import { FC, useState, useEffect } from 'react';
 import { useAudio } from 'react-use';
 
 import { useStores } from 'store/hooks';
-import { setOutAudioDevices } from 'utils/device';
+import { getAudioPermission, setOutAudioDevices } from 'utils/device';
 
 import iconSoundStopImg from 'assets/images/stop-sound.png';
 import iconSoundStartImg from 'assets/images/start-sound.png';
@@ -39,6 +39,11 @@ const HeadphoneItem: FC<BasicProps> = ({ nextStep }) => {
   };
 
   useEffect(() => {
+    getAudioPermission()
+      .then()
+      .catch((err: Error) => {
+        alert(err.message);
+      });
     return () => {
       controls.pause();
     };

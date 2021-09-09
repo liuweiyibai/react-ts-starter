@@ -1,10 +1,10 @@
 import { FC, useRef, useEffect, useState } from 'react';
 import { Button, Select, Spin } from 'antd';
-import { observer } from 'mobx-react';
 import { useStores } from 'store/hooks';
 import styles from './style.module.less';
 import { BasicProps } from './interface';
 import { sleep } from 'utils/tool';
+import { getCameraPermission } from 'utils/device';
 
 const CameraItem: FC<BasicProps> = ({ nextStep }) => {
   const { deviceInfo, cameraCurrentID, zgEngine } = useStores('appStore');
@@ -38,16 +38,39 @@ const CameraItem: FC<BasicProps> = ({ nextStep }) => {
   };
 
   useEffect(() => {
-    if (cameraCurrentID) {
-      played();
-    }
+    getCameraPermission()
+      .then(() => {
+        if (cameraCurrentID) {
+          played();
+        }
+      })
+      .catch((text: Error) => {
+        // 重新给权限后需要刷新重试
+        alert(text.message);
+        setSpinning(false);
+      });
+
     return () => {
-      zgEngine.destroyStream(streamRef.current);
+      if (streamRef.current) {
+        zgEngine.destroyStream(streamRef.current);
+      }
     };
   }, []);
 
   return (
     <div className={styles.camera}>
+      {/* <Alert
+        message="Warning Text"
+        type="warning"
+        action={
+          <Space>
+            <Button size="small" type="ghost">
+              Done
+            </Button>
+          </Space>
+        }
+        closable
+      /> */}
       <div className={styles.line}>
         <div className={styles.l}>Camera :</div>
         <Select

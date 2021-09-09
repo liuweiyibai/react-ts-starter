@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { get } from 'lodash-es';
 
 export const handleClick = () => {
   alert(1);
@@ -45,7 +46,7 @@ export const getTimeZone = () => {
   return timeZone;
 };
 
-export const getOsInfo = () => {
+export const getOsName = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   let name = 'Unknown';
   if (userAgent.indexOf('win') > -1) {
@@ -71,6 +72,10 @@ export const getOsInfo = () => {
     name = 'Unknown';
   }
   return name;
+};
+
+export const getNetwork = () => {
+  return get(navigator, 'connection.effectiveType', '-');
 };
 
 export const processChatBoxLinks = (str: string, id: string) => {

@@ -5,6 +5,7 @@ import { useStores } from 'store/hooks';
 
 import { BasicProps } from './interface';
 import styles from './style.module.less';
+import { getAudioPermission } from 'utils/device';
 
 const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
   const [soundLevel, setSoundLevel] = useState(0);
@@ -31,6 +32,9 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
     });
     return () => {
       zgEngine.off('capturedSoundLevelUpdate');
+      if (streamRef.current) {
+        zgEngine.destroyStream(streamRef.current);
+      }
     };
   }, []);
 
@@ -45,13 +49,11 @@ const MicrophoneItem: FC<BasicProps> = ({ nextStep }) => {
       videoRef.current.srcObject = streamRef.current;
     };
 
-    startStream();
-
-    return () => {
-      if (streamRef.current) {
-        zgEngine.destroyStream(streamRef.current);
-      }
-    };
+    startStream().catch(error => {
+      console.log('====================================');
+      console.log(error);
+      console.log('====================================');
+    });
   }, [microphoneCurrentID]);
 
   return (
