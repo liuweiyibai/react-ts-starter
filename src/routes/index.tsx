@@ -59,7 +59,7 @@ const routeList: PartialRouteObject[] = [
     ),
   },
   {
-    path: '/live-room/:classId',
+    path: '/live-room/:courseId',
     element: (
       <WrapperRouteComponent element={<LiveRoom />} titleId="title.liveRoom" />
     ),

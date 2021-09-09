@@ -6,6 +6,7 @@ declare namespace NodeJS {
     readonly NODE_ENV: 'development' | 'production' | 'test';
     readonly REACT_APP_ZEGO_APP_ID: number;
     readonly REACT_APP_ZEGO_SERVER: string;
+    readonly REACT_APP_BASE_API: string;
   }
 }
 

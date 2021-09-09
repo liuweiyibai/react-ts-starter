@@ -5,12 +5,12 @@ import { stores } from 'store/hooks';
 export type { AxiosRequestConfig, Method } from 'axios';
 
 interface AjaxResponse<T> {
-  code: number;
-  data: T;
+  ret: number;
+  result: T;
 }
 
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.REACT_APP_BASE_API,
   timeout: 6000,
 });
 

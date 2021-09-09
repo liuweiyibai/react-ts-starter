@@ -38,8 +38,8 @@ export default class UserStore {
   async loginAction(params: any) {
     this.loginLoading = true;
     const resp = await userLogin(params);
-    if (resp.code === 200) {
-      const token = resp.data as string;
+    if (resp.ret === 200) {
+      const token = resp.result as string;
       this.token = token;
       session.set(TOKEN, token);
       this.loginLoading = false;
