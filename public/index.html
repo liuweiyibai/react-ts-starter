@@ -17,7 +17,10 @@
       href="<%= htmlWebpackPlugin.options.cdns[i].path %>"
     />
     <% }else{%>
-    <script src="<%= htmlWebpackPlugin.options.cdns[i].path %>"></script>
+    <script
+      crossorigin
+      src="<%= htmlWebpackPlugin.options.cdns[i].path %>"
+    ></script>
     <% } %> <% } %>
   </head>
   <body>

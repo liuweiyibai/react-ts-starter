@@ -34,7 +34,6 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "build:test": "dotenv -e .env.test react-app-rewired build",
-    "analyzer": "dotenv -e .env.test react-app-rewired build",
     "gh": "gh-pages -d dist",
     "prepare": "husky install",
     "prettier": "prettier --write 'src/**/*.{js,jsx,tsx,ts,less,md,json}'",

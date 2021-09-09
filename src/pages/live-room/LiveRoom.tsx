@@ -4,9 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import styles from './LiveRoom.module.less';
 import ControlBar from 'components/ControlBar';
 import ComponentIM from 'components/IM';
+import { useStores } from 'store/hooks';
 
 const LiveRoom: FC = () => {
   const navigate = useNavigate();
+  const { zgEngine } = useStores('appStore');
+  const playScreenStream = async () => {
+    zgEngine.createStream();
+  };
+  const playCameraStream = async () => {
+    zgEngine.createStream();
+  };
   return (
     <div className={styles.liveRoomWrap}>
       <div className={styles.header}>
