@@ -6,6 +6,9 @@ import { stores } from './store/hooks';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'styles/reset.less';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 const bootstrap = () => {
   /* eslint-disable react/no-render-return-value */

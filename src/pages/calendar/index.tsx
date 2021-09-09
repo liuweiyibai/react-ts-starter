@@ -13,31 +13,18 @@ interface TypeDayCourse {
   day: string;
 }
 
-const headerRenderFunc: HeaderRender<Moment> = ({ value, onChange }) => {
-  const start = 0;
-  const end = 12;
-  const monthOptions = [];
-  const current = value.clone();
-  const localeData = value.localeData();
-  const months = [];
-  for (let i = 0; i < 12; i++) {
-    current.month(i);
-    months.push(localeData.monthsShort(current));
-  }
+const months = [...new Array(12)].map((t, i) => ({
+  value: i,
+  label: `${i + 1}月`,
+}));
 
-  for (let index = start; index < end; index++) {
-    monthOptions.push(
-      <Option className="month-item" key={`${index}`} value={months[index]}>
-        {months[index]}
-      </Option>,
-    );
-  }
+const headerRenderFunc: HeaderRender<Moment> = ({ value, onChange }) => {
   const month = value.month();
   const year = value.year();
   const options = [];
   for (let i = year - 10; i < year + 10; i += 1) {
     options.push(
-      <Select.Option key={i} value={i} className="year-item">
+      <Select.Option key={`year-${i}`} value={i} className="year-item">
         {i}
       </Select.Option>,
     );
@@ -60,14 +47,22 @@ const headerRenderFunc: HeaderRender<Moment> = ({ value, onChange }) => {
         <Select
           size="small"
           dropdownMatchSelectWidth={false}
-          value={String(month)}
+          value={month}
           onChange={selectedMonth => {
             const newValue = value.clone();
-            newValue.month(parseInt(selectedMonth, 10));
+            newValue.month(selectedMonth);
             onChange(newValue);
           }}
         >
-          {monthOptions}
+          {months.map((month, index) => (
+            <Option
+              className="month-item"
+              key={`month-${index}`}
+              value={month.value}
+            >
+              {month.label}
+            </Option>
+          ))}
         </Select>
       </div>
       <Button
@@ -77,7 +72,7 @@ const headerRenderFunc: HeaderRender<Moment> = ({ value, onChange }) => {
           onChange(moment());
         }}
       >
-        Today
+        返回今天
       </Button>
     </div>
   );
@@ -103,7 +98,6 @@ const CourseCalendar: FC = () => {
   const { visibleAppDetection, toggleVisibleAppDetection } =
     useStores('appStore');
   const handleOnChange = (date: Moment) => {
-    console.log(date);
     setCurrentDate(date);
   };
 

@@ -13,8 +13,8 @@ type TypeZegoDeviceInfos = ZegoDeviceInfos | null;
 
 // 初始化实例
 const zgEngine = new ZegoExpressEngine(
-  2134092766,
-  'wss://webliveroom-hk-test.zegocloud.com/ws',
+  Number(process.env.REACT_APP_ZEGO_APP_ID),
+  process.env.REACT_APP_ZEGO_SERVER,
 );
 
 // 全局的store

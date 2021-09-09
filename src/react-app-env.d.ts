@@ -1,5 +1,14 @@
 /* eslint-disable */
 /// <reference types="react-scripts" />
+
+declare namespace NodeJS {
+  interface ProcessEnv {
+    readonly NODE_ENV: 'development' | 'production' | 'test';
+    readonly REACT_APP_ZEGO_APP_ID: number;
+    readonly REACT_APP_ZEGO_SERVER: string;
+  }
+}
+
 declare module '*.css';
 declare module '*.less';
 declare module '*.scss';
