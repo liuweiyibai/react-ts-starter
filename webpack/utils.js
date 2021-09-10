@@ -9,7 +9,10 @@ exports.invade = function (target, name, callback) {
 // !此配置只针对开发环境
 exports.devServerProxyOrMock = function () {
   // 如果是 https 则需要，进行反代，如果非https则进行mock
-  if (process.env?.REACT_APP_BASE_API?.startsWith('https://')) {
+  if (
+    process.env?.REACT_APP_BASE_API?.startsWith('https://') ||
+    process.env?.REACT_APP_BASE_API?.startsWith('//')
+  ) {
     return {
       proxy: {
         '/api': {

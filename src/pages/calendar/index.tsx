@@ -5,6 +5,7 @@ import styles from './style.module.less';
 import moment, { Moment } from 'moment';
 import CourseList from './CourseList';
 import { useStores } from 'store/hooks';
+import { getCalendars } from 'api';
 
 const { Option } = Select;
 
@@ -91,15 +92,37 @@ const dateCellRenderFunc = (dayList: TypeDayCourse[]) => {
 };
 
 const CourseCalendar: FC = () => {
-  const [dayList, setDayList] = useState([]);
+  const [dayList, setDayList] = useState<TypeDayCourse[]>([]);
   const [currentDate, setCurrentDate] = useState(moment());
-  const [visible, setVisible] = useState(true);
 
   const { visibleAppDetection, toggleVisibleAppDetection } =
     useStores('appStore');
+
   const handleOnChange = (date: Moment) => {
     setCurrentDate(date);
   };
+
+  const fetchCalendars = async () => {
+    const resp = await getCalendars<TypeDayCourse[]>({
+      beginTime: currentDate
+        .clone()
+        .add(-1, 'month')
+        .endOf('month')
+        .format('YYYY-MM-DD HH:mm:ss'),
+      endTime: currentDate
+        .clone()
+        .add(1, 'month')
+        .startOf('month')
+        .format('YYYY-MM-DD HH:mm:ss'),
+    });
+    if (resp.ret === 20000) {
+      setDayList(resp.result);
+    }
+  };
+
+  useEffect(() => {
+    fetchCalendars();
+  }, []);
 
   useEffect(() => {
     if (!visibleAppDetection) {

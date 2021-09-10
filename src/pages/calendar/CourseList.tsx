@@ -1,10 +1,11 @@
-import { useState, FC } from 'react';
-import { Select, Spin } from 'antd';
+import { useState, FC, useEffect } from 'react';
+import { Select, Spin, Empty } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import moment, { Moment } from 'moment';
+import type { Moment } from 'moment';
 import { ReactComponent as ClockSvg } from 'assets/svgs/clock.svg';
 import styles from './style.module.less';
 import { getTimeZone } from 'utils/tool';
+import { getDayCourses } from 'api';
 
 const { Option } = Select;
 
@@ -43,31 +44,37 @@ const FLAG_TAG: {
 const currentTimeZone = getTimeZone();
 
 const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
-  const [classList, setClassList] = useState<TypeClass[]>([
-    {
-      casId: 0,
-      conversationId: '6131ba40d433dd5042e775d5',
-      courseName: 'liuwei-test',
-      deleted: 0,
-      flag: 0,
-      id: 523642,
-      liveAt: 1630605677000,
-      liveDuration: 999,
-      roomId: 'test-20210903060158-100000671',
-      subId: 70,
-      teacherId: '3adcf8d5',
-      liveBegin: moment(1630605677000).format('MM/DD HH:mm'),
-      liveEnd: moment(1630605677000 + 999 * 1000 * 60).format('MM/DD HH:mm'),
-    },
-  ]);
+  const [classList, setClassList] = useState<TypeClass[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filterFlag, setFilterFlag] = useState('-1');
+  const [filterFlag, setFilterFlag] = useState(-1);
   const navigate = useNavigate();
 
-  const onFlagChange = () => {};
+  const onFlagChange = (e: number) => {
+    setFilterFlag(e);
+    fetchGetDayCourses();
+  };
+
   const onClassClick = (item: TypeClass) => {
     navigate(`/live-room/${item.roomId}`);
   };
+
+  const fetchGetDayCourses = async () => {
+    setIsLoading(true);
+    const resp = await getDayCourses<TypeClass[]>({
+      beginTime: currentDate.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      endTime: currentDate.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      flag: filterFlag,
+    });
+    setIsLoading(false);
+    if (resp.ret === 20000) {
+      setClassList(resp.result);
+    }
+  };
+
+  useEffect(() => {
+    fetchGetDayCourses();
+    return () => {};
+  }, [currentDate]);
 
   return (
     <Spin wrapperClassName={styles.course_list_wrapper} spinning={isLoading}>
@@ -83,7 +90,7 @@ const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
           })}
         </Select>
       </div>
-      <div className="body">
+      <div className={`body ${classList.length === 0 ? 'body_empty' : ''}`}>
         {classList.map((item, index) => {
           return (
             <div
@@ -104,6 +111,8 @@ const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
             </div>
           );
         })}
+
+        {classList.length === 0 && <Empty />}
       </div>
     </Spin>
   );

@@ -43,9 +43,9 @@ class BasicLayout extends Component<IBasicLayoutProps, IBasicLayoutState> {
             {/* </Suspense> */}
           </Content>
         </Layout>
-        {appStore?.visibleAppDetection && (
+        {/* {appStore?.visibleAppDetection && (
           <AppDetection onClose={() => appStore?.toggleVisibleAppDetection()} />
-        )}
+        )} */}
       </>
     );
   }
