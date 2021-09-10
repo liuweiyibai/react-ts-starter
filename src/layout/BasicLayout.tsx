@@ -9,7 +9,6 @@ import AppSider from 'components/AppSider';
 import AppDetection from 'components/AppDetection';
 
 interface IBasicLayoutProps {
-  loading?: boolean;
   appStore?: AppStore;
   userStore?: UserStore;
   navigate?: NavigateFunction;

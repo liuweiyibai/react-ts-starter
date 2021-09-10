@@ -39,7 +39,7 @@ const AppSiderBottom: FC = () => {
         overlayClassName="toolkit-tips"
       >
         <Link className="menu-item" to="/live/room/main/window/test">
-          <TestClassRoomSvg name="iconicon_nav_temporaryclassrooms" />
+          <TestClassRoomSvg />
         </Link>
       </Tooltip>
       <Tooltip

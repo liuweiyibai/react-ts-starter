@@ -18,6 +18,10 @@ const zgEngine = new ZegoExpressEngine(
   process.env.REACT_APP_ZEGO_SERVER,
 );
 
+zgEngine.setLogConfig({
+  logLevel: process.env.NODE_ENV === 'production' ? 'disable' : 'debug',
+});
+
 // 全局的store
 export default class AppStore {
   // 是否展示硬件测试
