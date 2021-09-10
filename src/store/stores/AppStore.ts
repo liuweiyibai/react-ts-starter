@@ -13,6 +13,7 @@ import {
   MICROPHONE_CURRENT_ID,
 } from 'utils/var';
 import { ICourseDataType, IStreamType } from './interface';
+import { compSystemDeviceList } from 'utils/tool';
 
 type TypeZegoDeviceInfos = ZegoDeviceInfos | null;
 
@@ -90,19 +91,28 @@ export default class AppStore {
 
   async getDevicesAction() {
     const resp = await zgEngine.enumDevices();
+    compSystemDeviceList(resp);
+
+    const getOrSet = (key: string, deviceId: string) => {
+      const localRes = storage.get(key);
+      if (localRes) return localRes;
+      storage.set(key, deviceId);
+      return deviceId;
+    };
+
     if (resp.cameras.length) {
-      this.cameraCurrentID =
-        storage.get(CAMERA_CURRENT_ID) || resp.cameras[0].deviceID;
+      const deviceId = resp.cameras[0].deviceID;
+      this.cameraCurrentID = getOrSet(CAMERA_CURRENT_ID, deviceId);
     }
 
     if (resp.speakers.length) {
-      this.speakerCurrentID =
-        storage.get(SPEAKER_CURRENT_ID) || resp.speakers[0].deviceID;
+      const deviceId = resp.speakers[0].deviceID;
+      this.speakerCurrentID = getOrSet(SPEAKER_CURRENT_ID, deviceId);
     }
 
     if (resp.microphones.length) {
-      this.microphoneCurrentID =
-        storage.get(MICROPHONE_CURRENT_ID) || resp.microphones[0].deviceID;
+      const deviceId = resp.microphones[0].deviceID;
+      this.microphoneCurrentID = getOrSet(MICROPHONE_CURRENT_ID, deviceId);
     }
     this.deviceInfo = resp;
   }

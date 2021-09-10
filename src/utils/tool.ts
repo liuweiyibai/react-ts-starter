@@ -1,6 +1,9 @@
 import moment from 'moment';
 import { get } from 'lodash-es';
-import type { ZegoDeviceInfos } from 'zego-express-engine-webrtc/sdk/code/zh/ZegoExpressEntity.web';
+import type {
+  ZegoDeviceInfos,
+  ZegoDeviceInfo,
+} from 'zego-express-engine-webrtc/sdk/code/zh/ZegoExpressEntity.web';
 
 /**
  * 睡眠函数
@@ -95,16 +98,28 @@ export const processChatBoxLinks = (str: string, id: string) => {
   return str;
 };
 
+// 删除一组设备中的带有 “默认” 字样的设备
+const deleteDefaultDevice = (ds: ZegoDeviceInfo[]) => {
+  const index = ds.findIndex(t => t.deviceName.indexOf('默认') > -1);
+  if (index >= 0) {
+    const device = ds[index];
+    const name = device.deviceName.replaceAll('默认 - ', '');
+    ds.splice(index, 1);
+    const sameNameDeviceIndex = ds.findIndex(t => t.deviceName === name);
+    if (sameNameDeviceIndex >= 0) {
+      [ds[0], ds[sameNameDeviceIndex]] = [ds[sameNameDeviceIndex], ds[0]];
+    } else {
+      return ds;
+    }
+  }
+  return ds;
+};
+
 /**
  * 删除设备列表中的默认设备
  */
-// export const compSystemDeviceList = (devices: ZegoDeviceInfos) => {
-//   const cameraIndex = devices.cameras.findIndex(
-//     t => t.deviceName.indexOf('默认') > -1,
-//   );
-//   if (cameraIndex) {
-//     const cameraDefault = devices.cameras[cameraIndex];
-//     let deviceName = cameraDefault.deviceName.replaceAll('默认 - ', '');
-//     devices.cameras.splice
-//   }
-// };
+export const compSystemDeviceList = (devices: ZegoDeviceInfos) => {
+  devices.cameras = deleteDefaultDevice(devices.cameras);
+  devices.microphones = deleteDefaultDevice(devices.microphones);
+  devices.speakers = deleteDefaultDevice(devices.speakers);
+};

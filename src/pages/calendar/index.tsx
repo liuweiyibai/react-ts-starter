@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { Calendar, Button, Select } from 'antd';
+import { usePrevious } from 'react-use';
 import type { HeaderRender } from 'antd/lib/calendar/generateCalendar';
 import styles from './style.module.less';
 import moment, { Moment } from 'moment';
@@ -94,7 +95,7 @@ const dateCellRenderFunc = (dayList: TypeDayCourse[]) => {
 const CourseCalendar: FC = () => {
   const [dayList, setDayList] = useState<TypeDayCourse[]>([]);
   const [currentDate, setCurrentDate] = useState(moment());
-
+  const preCurrentDate = usePrevious<Moment>(currentDate);
   const { visibleAppDetection, toggleVisibleAppDetection } =
     useStores('appStore');
 
@@ -103,28 +104,31 @@ const CourseCalendar: FC = () => {
   };
 
   const fetchCalendars = async () => {
-    const resp = await getCalendars<TypeDayCourse[]>({
+    const params = {
       beginTime: currentDate
         .clone()
-        .add(-1, 'month')
-        .endOf('month')
-        .format('YYYY-MM-DD HH:mm:ss'),
-      endTime: currentDate
-        .clone()
-        .add(1, 'month')
         .startOf('month')
         .format('YYYY-MM-DD HH:mm:ss'),
-    });
+      endTime: currentDate.clone().endOf('month').format('YYYY-MM-DD HH:mm:ss'),
+    };
+
+    const resp = await getCalendars<TypeDayCourse[]>(params);
     if (resp.ret === 20000) {
       setDayList(resp.result);
     }
   };
 
+  /**
+   * 比较月份是否发生变化
+   */
   useEffect(() => {
-    fetchCalendars();
-  }, []);
+    if (preCurrentDate?.month() !== currentDate?.month()) {
+      fetchCalendars();
+    }
+  }, [currentDate]);
 
   useEffect(() => {
+    fetchCalendars();
     if (!visibleAppDetection) {
       toggleVisibleAppDetection();
     }
