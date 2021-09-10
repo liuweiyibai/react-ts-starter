@@ -1,3 +1,4 @@
+// 课程信息
 export interface ICourseData {
   preLiveCourse?: {
     id?: number;
@@ -19,4 +20,12 @@ export interface ICourseData {
   liveMixStreamId?: string;
   liveMixStreamName?: string;
   liveUserId?: string;
+}
+
+export type ICourseDataType = ICourseData | null;
+
+// 流类型
+export interface IStreamType {
+  cameraStream: string;
+  screenStream: string;
 }

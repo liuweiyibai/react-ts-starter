@@ -8,6 +8,7 @@ import {
   SPEAKER_CURRENT_ID,
   MICROPHONE_CURRENT_ID,
 } from 'utils/var';
+import { ICourseDataType, IStreamType } from './interface';
 
 type TypeZegoDeviceInfos = ZegoDeviceInfos | null;
 
@@ -27,6 +28,12 @@ export default class AppStore {
   public speakerCurrentID = '';
   public microphoneCurrentID = '';
   public userListMap = new Map();
+  // 当前课程
+  public courseData: ICourseDataType = null;
+  // 流
+  public cameraStream: MediaStream | null = null;
+  public screenStream: MediaStream | null = null;
+
   constructor() {
     makeObservable(this, {
       visibleAppDetection: observable,
@@ -34,6 +41,8 @@ export default class AppStore {
       cameraCurrentID: observable,
       speakerCurrentID: observable,
       microphoneCurrentID: observable,
+      cameraStream: observable,
+      screenStream: observable,
       toggleVisibleAppDetection: action.bound,
       getDevicesAction: action.bound,
       userListMap: observable,
@@ -41,6 +50,8 @@ export default class AppStore {
       changeCameraCurrentIDAction: action.bound,
       changeMicrophoneCurrentIDAction: action.bound,
       changeSpeakerCurrentIDAction: action.bound,
+      setStream: action.bound,
+      setCourseData: action.bound,
     });
   }
   toggleVisibleAppDetection() {
@@ -84,10 +95,21 @@ export default class AppStore {
     this.deviceInfo = resp;
   }
 
+  // 修改用户列表
   setUserListMap(
     key: string,
     val: { userID: string; userName: string; online: boolean },
   ) {
     this.userListMap.set(key, val);
+  }
+
+  // 修改流
+  setStream(streamType: keyof IStreamType, streamObj: MediaStream) {
+    this[streamType] = streamObj;
+  }
+
+  // 修改课程信息
+  setCourseData(course: ICourseDataType) {
+    this.courseData = course;
   }
 }
