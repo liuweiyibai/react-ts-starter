@@ -1,3 +1,5 @@
+import { isPlainObject, isArray } from 'lodash-es';
+
 // 封装操作localStorage本地储存的方法
 const storage = {
   set(key: string, value: any) {
@@ -14,11 +16,20 @@ const storage = {
 
 const session = {
   set(key: string, value: any) {
-    sessionStorage.setItem(key, JSON.stringify(value));
+    const _value =
+      isPlainObject(value) || isArray(value) ? JSON.stringify(value) : value;
+    sessionStorage.setItem(key, _value);
   },
   get(key: string) {
     const res = sessionStorage.getItem(key);
-    return res ? JSON.parse(res) : res;
+    try {
+      if (res) {
+        return JSON.parse(res);
+      }
+      return res;
+    } catch (error) {
+      return res;
+    }
   },
   remove(key: string) {
     sessionStorage.removeItem(key);

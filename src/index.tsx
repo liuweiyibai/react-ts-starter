@@ -15,9 +15,7 @@ const bootstrap = () => {
   return ReactDOM.render(
     <ConfigProvider locale={zhCN}>
       <Provider {...stores}>
-        {/* <StoreProvider> */}
         <App />
-        {/* </StoreProvider> */}
       </Provider>
     </ConfigProvider>,
     document.getElementById('root'),

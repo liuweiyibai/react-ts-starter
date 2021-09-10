@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useStores } from 'store/hooks';
 
 // 登录系统进入的首页

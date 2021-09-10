@@ -1,5 +1,5 @@
 import { FC, lazy, Suspense } from 'react';
-import { PartialRouteObject } from 'react-router';
+import type { PartialRouteObject } from 'react-router';
 import { useRoutes } from 'react-router-dom';
 import Home from 'pages/home';
 import Login from 'pages/login';
@@ -15,54 +15,38 @@ const LiveRoom = lazy(() => import('pages/live-room'));
 const routeList: PartialRouteObject[] = [
   {
     path: 'login',
-    element: (
-      <WrapperRouteComponent element={<Login />} titleId="title.login" />
-    ),
+    element: <WrapperRouteComponent element={<Login />} title="用户登录" />,
   },
   {
     path: '/',
-    element: (
-      <WrapperRouteComponent element={<BasicLayout />} titleId="" auth />
-    ),
+    element: <WrapperRouteComponent element={<BasicLayout />} title="" auth />,
     children: [
       {
         path: '',
-        element: (
-          <WrapperRouteComponent element={<Home />} titleId="title.home" />
-        ),
+        element: <WrapperRouteComponent element={<Home />} title="首页" />,
       },
 
       {
         path: '/calendar',
         element: (
-          <WrapperRouteComponent element={<Calendar />} titleId="课程表" />
+          <WrapperRouteComponent element={<Calendar />} title="课程表" />
         ),
       },
       {
         path: '*',
         element: (
-          <WrapperRouteComponent
-            element={<NoMatchPage />}
-            titleId="title.dashboard"
-          />
+          <WrapperRouteComponent element={<NoMatchPage />} title="页面未找到" />
         ),
       },
     ],
   },
   {
     path: '/dashboard',
-    element: (
-      <WrapperRouteComponent
-        element={<Dashboard />}
-        titleId="title.dashboard"
-      />
-    ),
+    element: <WrapperRouteComponent element={<Dashboard />} title="控制台" />,
   },
   {
     path: '/live-room/:courseId',
-    element: (
-      <WrapperRouteComponent element={<LiveRoom />} titleId="title.liveRoom" />
-    ),
+    element: <WrapperRouteComponent element={<LiveRoom />} title="直播间" />,
   },
 ];
 

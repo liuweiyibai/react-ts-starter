@@ -1,6 +1,5 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Route, useNavigate } from 'react-router-dom';
-import { Result, Button } from 'antd';
 import { RouteProps } from 'react-router';
 import { useStores } from 'store/hooks';
 
