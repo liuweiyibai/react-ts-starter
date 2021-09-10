@@ -1,13 +1,4 @@
 import React from 'react';
-// import {
-//   observable,
-//   reaction,
-//   action,
-//   runInAction,
-//   makeObservable,
-// } from 'mobx';
-// import { observer } from 'mobx-react';
-
 import styles from './styles/LiveButton.module.less';
 
 import iconUpper from '../../assets/images/icon-upper.png';

@@ -1,14 +1,15 @@
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import React, { useEffect } from 'react';
 import { observable, computed, makeObservable } from 'mobx';
-import { Popover, Radio, RadioChangeEvent } from 'antd';
+import { Radio, RadioChangeEvent } from 'antd';
 import LiveButton from './LiveButton';
 
 import iconCameraOn from '../../assets/images/icon-camera-on.png';
 import iconCameraOff from '../../assets/images/icon-camera-off.png';
 import iconCameraDis from '../../assets/images/icon-camera-dis.png';
-import { IDevices } from './LiveAudioButton';
 import { useStores } from 'store/hooks';
+import { ZegoDeviceInfo } from 'zego-express-engine-webrtc/sdk/code/zh/ZegoExpressEntity.web';
+import AppStore from 'store/stores/AppStore';
 
 const PopoverContent = () => {
   const { cameraCurrentID, changeCameraCurrentIDAction, deviceInfo } =
@@ -43,41 +44,35 @@ const PopoverContent = () => {
 };
 
 interface ILiveCameraButton {
+  appStore?: AppStore;
   [key: string]: any;
 }
 
+@inject('appStore')
+@observer
 class LiveCameraButton extends React.Component<ILiveCameraButton> {
   @observable cameraIsOpen = true;
-  @observable cameraCurrentID = 'cameraCurrentID';
-  @observable cameraCurrentName = 'cameraCurrentName';
-  @observable cameraList: IDevices['cameras'] = [];
-
-  @observable icon = '';
-  @observable isDisable = true;
   @observable hoverTitle = '';
   @observable hasUpperIcon = true;
-
-  @observable isPopoverVisible = false;
 
   constructor(props: ILiveCameraButton) {
     super(props);
     makeObservable(this);
   }
 
+  @computed get isDisable() {
+    const { appStore } = this.props;
+    if (appStore?.deviceInfo?.cameras) return false;
+    return true;
+  }
+
   async onClick() {
     if (this.isDisable) return;
-    // remote.app?.mainWindow?.webContents.send(LiveEvent.OnToggleCamera);
-  }
 
-  onUpperClick() {
-    this.isPopoverVisible = !this.isPopoverVisible;
-  }
+    const { appStore } = this.props;
 
-  async onCameraChange() {
-    // remote.app?.mainWindow?.webContents.send(LiveEvent.OnCameraChange, {
-    //   deviceID: e.target.value,
-    //   deviceName: ''
-    // });
+    appStore?.setCameraOpenState(!this.cameraIsOpen);
+    this.cameraIsOpen = !this.cameraIsOpen;
   }
 
   @computed get currentIcon() {
@@ -98,9 +93,10 @@ class LiveCameraButton extends React.Component<ILiveCameraButton> {
         hoverTitle=""
         hasUpperIcon
         PopoverContent={<PopoverContent />}
+        onClick={() => this.onClick()}
       />
     );
   }
 }
 
-export default observer(LiveCameraButton);
+export default LiveCameraButton;

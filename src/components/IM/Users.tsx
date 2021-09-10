@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useStores } from 'store/hooks';
 import styles from './styles/User.module.less';
 import iconStudent from '../../assets/images/icon-student.png';
+import { observer } from 'mobx-react';
 
 function Users() {
   const { userListMap } = useStores('appStore');
@@ -26,4 +27,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default observer(Users);
