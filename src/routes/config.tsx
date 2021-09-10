@@ -4,20 +4,20 @@ import { RouteProps } from 'react-router';
 import PrivateRoute from './pravateRoute';
 
 export interface WrapperRouteProps extends RouteProps {
-  /** document title locale id */
-  titleId: string;
-  /** authorization？ */
+  // page 组件对应的 document title
+  title: string;
+  // 传入组件是否需要登录
   auth?: boolean;
 }
 
 const WrapperRouteComponent: FC<WrapperRouteProps> = ({
-  titleId,
+  title,
   auth,
   ...props
 }) => {
   const WitchRoute = auth ? PrivateRoute : Route;
-  if (titleId) {
-    document.title = titleId;
+  if (title) {
+    document.title = title;
   }
   return <WitchRoute {...props} />;
 };

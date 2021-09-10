@@ -9,7 +9,6 @@ import AppSider from 'components/AppSider';
 import AppDetection from 'components/AppDetection';
 
 interface IBasicLayoutProps {
-  title?: string;
   loading?: boolean;
   appStore?: AppStore;
   userStore?: UserStore;
@@ -25,10 +24,6 @@ const { Content, Sider } = Layout;
 @inject('appStore', 'userStore')
 @observer
 class BasicLayout extends Component<IBasicLayoutProps, IBasicLayoutState> {
-  // componentDidMount() {
-  //   console.log(this.props);
-  // }
-
   render() {
     const { appStore } = this.props;
     return (
@@ -38,14 +33,12 @@ class BasicLayout extends Component<IBasicLayoutProps, IBasicLayoutState> {
             <AppSider />
           </Sider>
           <Content>
-            {/* <Suspense fallback={<PageLoading />}> */}
             <Outlet />
-            {/* </Suspense> */}
           </Content>
         </Layout>
-        {/* {appStore?.visibleAppDetection && (
+        {appStore?.visibleAppDetection && (
           <AppDetection onClose={() => appStore?.toggleVisibleAppDetection()} />
-        )} */}
+        )}
       </>
     );
   }

@@ -1,4 +1,3 @@
-import {} from 'moment';
 import { request, AxiosRequestConfig } from 'utils/axios';
 
 /**
