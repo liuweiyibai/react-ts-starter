@@ -27,15 +27,19 @@ export const initZgEvents = (zgInstance: ZegoExpressEngine) => {
       } `,
       JSON.stringify(userList),
     );
+
+    console.log('===', '用户状态', userList);
   });
 
   // 流状态更新回调
   zgInstance.on(
     'roomStreamUpdate',
     async (roomID, updateType, streamList, extendedData) => {
+      console.log('===', 'updateType', updateType);
+
       if (updateType === 'ADD') {
         // 流新增，开始拉流
-        console.error(streamList);
+        console.log('===', '流', streamList);
       } else if (updateType === 'DELETE') {
         // 流删除，停止拉流
       }
@@ -56,6 +60,6 @@ export const initZgEvents = (zgInstance: ZegoExpressEngine) => {
 
   zgInstance.on('screenSharingEnded', stream => {
     // do something
-    console.warn('停止屏幕共享');
+    console.log('===', '停止屏幕共享');
   });
 };

@@ -15,6 +15,8 @@ import {
   ZegoRTMEvent,
   ZegoUser,
 } from 'zego-express-engine-webrtc/sdk/src/common/zego.entity';
+import { ICourseData, ICourseDataType } from 'store/stores/interface';
+import { observer } from 'mobx-react';
 
 // 经过摘取字段的消息
 export interface IMsg {
@@ -28,10 +30,6 @@ export interface IMsg {
 
 interface IMessageToSend extends Message {
   [key: string]: any;
-}
-
-interface ICourse {
-  conversationId?: string;
 }
 
 const MAX_MESSAGE_COUNT = 3000;
@@ -52,6 +50,7 @@ const realtime = createRealtimeClient()!;
 
 function Chat() {
   // const { userInfo } = useStores('userStore');
+  const { courseData } = useStores('appStore');
   const userInfo = { id: 'test', userName: 'zyd-test', userId: 'test-userId' };
 
   const { userListMap, setUserListMap, zgEngine } = useStores('appStore');
@@ -60,36 +59,23 @@ function Chat() {
   const [messages, setMessages] = useState<IMsg[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [course, setCourse] = useState<ICourse>(() => {
-    return {
-      id: 523614,
-      courseName: 'zyd-test-210810',
-      teacherId: '5g345ec3',
-      roomId: 'test-20210819065330-100000643',
-      conversationId: '611dffee8eaca61ee5e043e1',
-      subId: 70,
-      liveAt: '2021-09-08T00:56:21',
-      liveDuration: 999,
-      flag: 4,
-      createdBy: '',
-      updatedBy: '',
-      createdAt: '2021-08-19T06:53:24',
-      updatedAt: '2021-09-08T06:25:33',
-      deleted: 0,
-      casId: 0,
-      optionId: 0,
-      projectBelong: 1,
-      campusId: 0,
-      ciStatus: 1,
-    };
-  });
+  const [course, setCourse] = useState<ICourseData['preLiveCourse'] | null>(
+    null,
+  );
 
   const [conversation, setConversation] =
     useState<PresistentConversation | null>(null);
   const [imClient, setImClient] = useState<IMClient | null>(null);
 
   useEffect(() => {
+    setCourse(courseData?.preLiveCourse);
+  }, [courseData]);
+
+  useEffect(() => {
     initIMClient();
+  }, [course]);
+
+  useEffect(() => {
     initRoomUserList();
   }, []);
 
@@ -156,10 +142,12 @@ function Chat() {
   };
 
   const initIMClient = async () => {
+    if (!course) return;
+
     try {
       const imClient = await realtime.createIMClient(userInfo.userId);
       const conversation = await imClient.getConversation(
-        course.conversationId as string,
+        course.conversationId!,
       );
 
       setImClient(imClient);
@@ -299,4 +287,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default observer(Chat);

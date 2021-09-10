@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { observable, makeObservable } from 'mobx';
-import { Popover, Radio, Divider, RadioChangeEvent } from 'antd';
+import { observable, makeObservable, computed, action } from 'mobx';
+import { Radio, Divider, RadioChangeEvent } from 'antd';
 import { isEmpty } from 'lodash-es';
 
 import AppStore from 'store/stores/AppStore';
@@ -68,33 +68,14 @@ interface ILiveAudioButton {
   [key: string]: any;
 }
 
-export interface IDevices {
-  cameras?: { deviceID: string; deviceName: string }[];
-  microphones?: { deviceID: string; deviceName: string }[];
-  speakers?: { deviceID: string; deviceName: string }[];
-}
 @inject('appStore', 'userStore')
 @observer
 class LiveAudioButton extends React.Component<ILiveAudioButton> {
-  // @observable currentIcon = iconMicOn0;
-
   @observable microphoneIsOpen = true;
   @observable microphoneCurrentID = 'microphoneCurrentID';
-  // @observable microphoneCurrentName;
-  @observable microphoneList: IDevices['microphones'] = [];
   @observable microphoneLevel = 0;
-
-  @observable speakerIsOpen = true;
-  // @observable speakerCurrentID = 'speakerCurrentID';
-  // @observable speakerCurrentName;
-  @observable speakerList: IDevices['speakers'] = [];
-
-  @observable icon = '';
-  @observable isDisable = true;
   @observable hoverTitle = '';
   @observable hasUpperIcon = true;
-
-  @observable isPopoverVisible = false;
 
   constructor(props: ILiveAudioButton) {
     super(props);
@@ -107,33 +88,36 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
     if (isEmpty(appStore?.deviceInfo)) {
       appStore?.getDevicesAction();
     }
+
+    appStore?.zgEngine.on(
+      'capturedSoundLevelUpdate',
+      action(res => {
+        this.microphoneLevel = ~~res;
+      }),
+    );
   }
 
-  onUpperClick() {
-    this.isPopoverVisible = !this.isPopoverVisible;
+  @computed get isDisable() {
+    const { appStore } = this.props;
+    if (appStore?.deviceInfo?.microphones) return false;
+
+    appStore?.zgEngine.setSoundLevelDelegate(true, 400);
+    return true;
   }
 
-  async onMicrophoneChange() {
-    // remote.app?.mainWindow?.webContents.send(LiveEvent.OnMicrophoneChange, {
-    //   deviceID: e.target.value,
-    //   deviceName: ''
-    // });
-  }
+  @action
+  onToggleMicrophone = () => {
+    if (this.isDisable) return;
 
-  async onSpeakerChange() {
-    // remote.app?.mainWindow?.webContents.send(LiveEvent.OnSpeakerChange, {
-    //   deviceID: e.target.value,
-    //   deviceName: ''
-    // });
-  }
+    const { appStore } = this.props;
 
-  handleVisibleChange = (visible: boolean) => {
-    this.isPopoverVisible = visible;
+    appStore?.setMicrophoneOpenState(!this.microphoneIsOpen);
+    this.microphoneIsOpen = !this.microphoneIsOpen;
   };
 
   render() {
-    const { isDisable, microphoneLevel, microphoneIsOpen, props } = this;
-    // const { appStore } = props;
+    const { isDisable, microphoneLevel, microphoneIsOpen } = this;
+
     return (
       <LiveButton
         icon={getCurrentAudioIconSrc(
@@ -148,6 +132,7 @@ class LiveAudioButton extends React.Component<ILiveAudioButton> {
         hoverTitle=""
         hasUpperIcon
         PopoverContent={<PopoverContent />}
+        onClick={() => this.onToggleMicrophone()}
       />
     );
   }

@@ -13,8 +13,8 @@ const ControlBar: FC = () => {
       <LiveAudioButton />
       <LiveCameraButton />
       <LiveCaptureButton />
-      <LiveChatButton />
-      <LiveUsersButton />
+      {/* <LiveChatButton /> */}
+      {/* <LiveUsersButton /> */}
       <LiveActionButton />
     </div>
   );
