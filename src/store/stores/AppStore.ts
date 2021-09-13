@@ -135,27 +135,27 @@ export default class AppStore {
   }
 
   // 创建屏幕共享流
-  async createScreenStream(
-    previewVideoDom: HTMLVideoElement = document.getElementById(
-      'preview-video',
-    ) as HTMLVideoElement,
-  ) {
-    let screenStream = await this.zgEngine.createStream({
-      screen: {
-        // audio: document.getElementById('isScreenAudio').value == 'yes' ? true : false,
-        audio: true,
-        videoQuality: 4,
-        bitRate: 3000,
-        frameRate: 15,
-        width: 1920,
-        height: 1080,
-        startBitrate: 'target',
-      },
-    });
+  async createScreenStream(previewVideoDom: HTMLVideoElement) {
+    try {
+      let screenStream = await this.zgEngine.createStream({
+        screen: {
+          // audio: document.getElementById('isScreenAudio').value == 'yes' ? true : false,
+          audio: true,
+          videoQuality: 4,
+          bitRate: 3000,
+          frameRate: 15,
+          width: 1920,
+          height: 1080,
+          startBitrate: 'target',
+        },
+      });
 
-    previewVideoDom.srcObject = screenStream;
+      previewVideoDom.srcObject = screenStream;
 
-    this.setStream('screenStream', screenStream);
+      this.setStream('screenStream', screenStream);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // 销毁流

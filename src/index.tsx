@@ -8,16 +8,25 @@ import reportWebVitals from './reportWebVitals';
 import 'styles/reset.less';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from 'components/ErrorCallback';
 moment.locale('zh-cn');
 
 const bootstrap = () => {
   /* eslint-disable react/no-render-return-value */
   return ReactDOM.render(
-    <ConfigProvider locale={zhCN}>
-      <Provider {...stores}>
-        <App />
-      </Provider>
-    </ConfigProvider>,
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // reset the state of your app so the error doesn't happen again
+      }}
+    >
+      <ConfigProvider locale={zhCN}>
+        <Provider {...stores}>
+          <App />
+        </Provider>
+      </ConfigProvider>
+    </ErrorBoundary>,
     document.getElementById('root'),
   );
 };

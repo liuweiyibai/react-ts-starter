@@ -55,7 +55,7 @@ const CourseList: FC<PropsCoursList> = ({ currentDate }) => {
   };
 
   const onClassClick = (item: TypeClass) => {
-    navigate(`/live-room/${item.roomId}`);
+    navigate(`/live-room/${item.id}`);
   };
 
   const fetchGetDayCourses = async () => {

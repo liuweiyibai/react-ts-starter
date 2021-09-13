@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Button, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './LiveRoom.module.less';
@@ -16,6 +16,8 @@ const LiveRoom: FC = props => {
   const [course, setCourse] = useState<ICourseDataType>(null);
   const [zgAuthToken, setZgAuthToken] = useState('');
   const [loading, setLoading] = useState(false);
+  const cameraVideoRef = useRef<HTMLVideoElement>(null!);
+  const previewVideoRef = useRef<HTMLVideoElement>(null!);
   const {
     zgEngine,
     setStream,
@@ -23,6 +25,7 @@ const LiveRoom: FC = props => {
     publishingState,
     stopMix,
     stopPublishing,
+    createScreenStream,
   } = useStores('appStore');
 
   useEffect(() => {
@@ -48,14 +51,12 @@ const LiveRoom: FC = props => {
   }, [zgAuthToken]);
 
   // 获取课程数据
-  const getCourseData = () => {
-    getCourseInfo(courseId).then(res => {
-      console.log(res);
-      if (res.ret === 20000) {
-        setCourse(res.result || null);
-        setCourseData(res.result || null);
-      }
-    });
+  const getCourseData = async () => {
+    const resp = await getCourseInfo(courseId);
+    if (resp.ret === 20000) {
+      setCourse(resp.result);
+      setCourseData(resp.result);
+    }
   };
 
   // 获取即构鉴权 token
@@ -100,11 +101,12 @@ const LiveRoom: FC = props => {
 
     setStream('cameraStream', cameraStream);
 
-    const cameraVideo = document.getElementById(
-      'camera-video',
-    ) as HTMLVideoElement;
-
-    cameraVideo.srcObject = cameraStream;
+    cameraStream.getTracks().forEach(track => {
+      track.addEventListener('ended', () => {
+        // 可以监听到退出屏幕共享被关闭
+      });
+    });
+    cameraVideoRef.current.srcObject = cameraStream;
   };
 
   const onQuit = () => {
@@ -113,6 +115,10 @@ const LiveRoom: FC = props => {
       return;
     }
     navigate('/calendar');
+  };
+
+  const handleCaptureClick = async () => {
+    await createScreenStream(previewVideoRef.current);
   };
 
   return (
@@ -132,28 +138,22 @@ const LiveRoom: FC = props => {
       <div className={styles.main}>
         <div className={styles.content}>
           <div className={styles['preview-box']}>
-            <video
-              // src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-              src=""
-              muted
-              autoPlay
-              id="preview-video"
-            />
+            <video src="" muted autoPlay ref={previewVideoRef} />
           </div>
 
           <div className={styles.footer}>
-            <ControlBar />
+            <ControlBar onCaptureClick={handleCaptureClick} />
           </div>
         </div>
 
         <div className={styles['right-side']}>
           <div className={styles['camera-box']}>
             <video
+              ref={cameraVideoRef}
               // src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
               src=""
               muted
               autoPlay
-              id="camera-video"
             />
           </div>
 
